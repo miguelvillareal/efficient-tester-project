@@ -1,1 +1,4 @@
 django==3
+
+djangorestframework
+django-filter
