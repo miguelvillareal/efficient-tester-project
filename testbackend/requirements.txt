@@ -1,4 +1,6 @@
 django==3
 
+pymongo[tls,srv]==3.11.2
+
 djangorestframework
 django-filter
