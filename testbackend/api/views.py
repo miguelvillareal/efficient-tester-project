@@ -14,7 +14,7 @@ class UserListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.get_queryset().order_by('id')
     serializer_class = UserSerializer
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('email', 'username')
+    filterset_fields = ('email', 'username','password')
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
