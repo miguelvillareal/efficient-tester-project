@@ -14,11 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from django.conf.urls import include
+from django.urls import path, re_path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
+from resetpassword.utils.views import sendPasswordLink,PasswordResetConfirmView,pwdenvoye
 
 
 router = DefaultRouter()
@@ -29,5 +29,9 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('auth/',include('djoser.urls')),
     path('auth/',include('djoser.urls.jwt')),
+    path('imageInteraction/', include('backendspace.urls')),
+    path('account/reset_password', sendPasswordLink, name="reset_password"),
+    re_path('account/reset_password_confirm/(?P<uidb64>[0-9A-Za-z]+)/(?P<token>.+)',PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('account/pwdenvoye', pwdenvoye, name="pwdenvoye"),
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
