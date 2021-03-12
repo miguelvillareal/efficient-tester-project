@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 //import { Platform } from '@ionic/angular';
 import { ApiDjangoService } from '../services/api-django.service';
 import { Router } from '@angular/router';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'app-registration',
@@ -12,7 +13,8 @@ export class RegistrationPage implements OnInit {
   registerCredentials = { username: '', firstName: '', lastName: '', email: '', password: '', passwordbis: '' };
 
   constructor(public apiService: ApiDjangoService,
-    public router: Router) { }
+    public router: Router,
+    public authService: AuthenticationService) { }
 
   ngOnInit() {
   }
@@ -40,12 +42,12 @@ export class RegistrationPage implements OnInit {
             if (nbUserFound==0){
               let userToCreate = {
                 "email": this.registerCredentials.email,
-                "username": this.registerCredentials.username,
-                "firstName": this.registerCredentials.firstName,
-                "lastName": this.registerCredentials.lastName,
-                "password": this.registerCredentials.password,
-                "is_active": true,
-                "is_staff": false
+                //"username": this.registerCredentials.username,
+                //"firstName": this.registerCredentials.firstName,
+                //"lastName": this.registerCredentials.lastName,
+                "password": this.registerCredentials.password
+                //"is_active": true,
+                //"is_staff": false
               }
   
               this.apiService.createUser(userToCreate).subscribe((resultat) => {
