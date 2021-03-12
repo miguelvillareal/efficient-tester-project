@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+/* Three image containers (use 25% for four, and 50% for two, etc) */
+.column {
+  float: left;
+  padding: 5px;
+  flex: 50%;
+}
+
+/* Clear floats after image containers */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+#imageHeader {
+     margin-left: 30px
+}
+
+
+.next {
+    background-color:#4caff0;
+    color:black;
+    border-radius: 100px;
+}
+
+*[data-highlight="complete"] {
+  position: relative;
+}
+
+*[data-highlight="complete"]:after {
+  display: block;
+  content: '';
+  position: absolute;
+  top: 0;
+  margin-top: -30px;
+  left: 0;
+  height: 45px;
+  width: 95%;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+*[data-highlight="active"] {
+  position: relative;
+}
+
+*[data-highlight="active"]:after {
+  display: block;
+  content: '';
+  position: absolute;
+  top: 0;
+  margin-top: -30px;
+  left: 0;
+  height: 45px;
+  width: 95%;
+  outline-style: solid;
+  outline-color: black
+}
+
+    #testTubeBottom > *{
+        width:5vw;
+        display: inline-block;
+    }
+
+.img-with-text {
+    text-align: justify;
+    display: inline-block;
+}
+
+.img-with-text input {
+    display: inline-block;
+    margin: 0 auto;
+}
+
+
+
+</style>
+</head>
+<body onload="createTestTubes(); setActiveGroup();">
+
+
+{% load static %}
+<div class="row">
+
+
+    <img src="{% static 'imageInteraction/imageHeaderTop.PNG' %}" width="700px" id="imageHeader">
+    <br>
+    <div class="column">
+        <img src="{% static 'imageInteraction/sideBarHeader.PNG' %}" width="25px">
+    </div>
+
+    <div class="column">
+
+        <a href="#" data-highlight="incomplete" id="A1-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="A1" onclick="changeImage(this);" /></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="B1-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="B1" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="C1-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="C1" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="D1-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="D1" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="E1-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="E1" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="F1-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="F1" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="G1-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="G1" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="H1-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="H1" onclick="changeImage(this);"/></a>
+        <br>
+    </div>
+    <div class="column">
+        <a href="#" data-highlight="incomplete" id="A2-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="A2" onclick="changeImage(this);" /></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="B2-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="B2" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="C2-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="C2" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="D2-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="D2" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="E2-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="E2" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="F2-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="F2" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="G2-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="G2" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="H2-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="H2" onclick="changeImage(this);"/></a>
+        <br>
+    </div>
+    <div class="column">
+        <a href="#" data-highlight="incomplete" id="A3-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="A3" onclick="changeImage(this);" /></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="B3-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="B3" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="C3-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="C3" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="D3-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="D3" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="E3-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="E3" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="F3-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="F3" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="G3-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="G3" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="H3-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="H3" onclick="changeImage(this);"/></a>
+        <br>
+    </div>
+    <div class="column">
+        <a href="#" data-highlight="incomplete" id="A4-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="A4" onclick="changeImage(this);" /></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="B4-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="B4" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="C4-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="C4" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="D4-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="D4" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="E4-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="E4" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="F4-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="F4" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="G4-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="G4" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="H4-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="H4" onclick="changeImage(this);"/></a>
+        <br>
+    </div>
+   <div class="column">
+        <a href="#" data-highlight="incomplete" id="A5-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="A5" onclick="changeImage(this);" /></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="B5-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="B5" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="C5-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="C5" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="D5-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="D5" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="E5-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="E5" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="F5-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="F5" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="G5-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="G5" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="H5-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="H5" onclick="changeImage(this);"/></a>
+        <br>
+    </div>
+    <div class="column">
+        <a href="#" data-highlight="incomplete" id="A6-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="A6" onclick="changeImage(this);" /></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="B6-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="B6" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="C6-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="C6" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="D6-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="D6" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="E6-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="E6" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="F6-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="F6" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="G6-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="G6" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="H6-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="H6" onclick="changeImage(this);"/></a>
+        <br>
+    </div>
+   <div class="column">
+        <a href="#" data-highlight="incomplete" id="A7-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="A7" onclick="changeImage(this);" /></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="B7-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="B7" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="C7-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="C7" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="D7-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="D7" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="E7-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="E7" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="F7-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="F7" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="G7-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="G7" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="H7-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="H7" onclick="changeImage(this);"/></a>
+        <br>
+    </div>
+    <div class="column">
+        <a href="#" data-highlight="incomplete" id="A8-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="A8" onclick="changeImage(this);" /></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="B8-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="B8" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="C8-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="C8" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="D8-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="D8" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="E8-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="E8" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="F8-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="F8" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="G8-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="G8" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="H8-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="H8" onclick="changeImage(this);"/></a>
+        <br>
+    </div>
+    <div class="column">
+        <a href="#" data-highlight="incomplete" id="A9-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="A9" onclick="changeImage(this);" /></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="B9-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="B9" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="C9-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="C9" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="D9-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="D9" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="E9-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="E9" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="F9-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="F9" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="G9-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="G9" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="H9-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="H9" onclick="changeImage(this);"/></a>
+        <br>
+    </div>
+    <div class="column">
+        <a href="#" data-highlight="incomplete" id="A10-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="A10" onclick="changeImage(this);" /></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="B10-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="B10" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="C10-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="C10" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="D10-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="D10" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="E10-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="E10" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="F10-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="F10" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="G10-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="G10" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="H10-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="H10" onclick="changeImage(this);"/></a>
+        <br>
+    </div>
+    <div class="column">
+        <a href="#" data-highlight="incomplete" id="A11-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="A11" onclick="changeImage(this);" /></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="B11-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="B11" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="C11-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="C11" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="D11-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="D11" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="E11-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="E11" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="F11-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="F11" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="G11-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="G11" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="H11-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="H11" onclick="changeImage(this);"/></a>
+        <br>
+    </div>
+    <div class="column">
+        <a href="#" data-highlight="incomplete" id="A12-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="A12" onclick="changeImage(this);" /></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="B12-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="B12" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="C12-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="C12" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="D12-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="D12" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="E12-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="E12" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="F12-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="F12" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="G12-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="G12" onclick="changeImage(this);"/></a>
+        <br>
+        <a href="#" data-highlight="incomplete" id="H12-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt submit" id="H12" onclick="changeImage(this);"/></a>
+        <br>
+    </div>
+    <button type="button" onClick="isNext();">Next</button>
+</div>
+
+<div class="row" id="testTubeBottom">
+
+
+
+</div>
+
+</body>
+
+<script>
+
+    var complete = false;
+
+    var currentGroup = 1;
+    var currentlySelectedAll = [];
+    var groupedPools = {{data|safe}}
+    var listOfAllCompleted = [];
+    var currentlySelectedGroup = [];
+
+    var wellPlate = 1;
+    var processStep = 1;
+
+    function createTestTubes() {
+
+        var count = 1;
+        for (var index = 0; index < groupedPools.length; index++, count++)
+            {
+            var div = document.createElement("div");
+            div.classList.add("img-with-text");
+
+
+            var input = document.createElement("input");
+
+            input.type = "image"
+            input.src = '{% static 'imageInteraction/testTube_empty.png' %}';
+
+            input.id = "testTubeGroup_" + (index + 1);
+
+            input.setAttribute("onclick","updateTestTube(this);");
+
+            input.classList.add('testTubeGroup');
+
+
+            var para = document.createElement("center");
+            para.innerText = "" + processStep + "-" + wellPlate + "." + count;
+
+
+            div.appendChild(input);
+            div.appendChild(para);
+            div.setAttribute("display","inline");
+
+            document.getElementById('testTubeBottom').appendChild(div);
+
+
+            if (count % 10 == 0)
+                {
+                    var breakPoint = document.createElement("br");
+                    document.getElementById('testTubeBottom').append(breakPoint);
+                }
+            }
+
+    }
+
+    function updateTestTube(input)
+    {
+        if (checkCompletion())
+            {
+                var id = input.id;
+                if (document.getElementById(id).src.includes("{% static 'imageInteraction/testTube_nonpositive.png' %}"))
+                    {
+                        document.getElementById(id).src = input.src.replace("{% static 'imageInteraction/testTube_nonpositive.png' %}", "{% static 'imageInteraction/testTube_positive.png' %}");
+                    }
+                else
+                    {
+                        document.getElementById(id).src = input.src.replace("{% static 'imageInteraction/testTube_positive.png' %}", "{% static 'imageInteraction/testTube_nonpositive.png' %}");
+                    }
+            }
+    }
+
+    function checkCompletion() {
+
+        if (JSON.stringify(groupedPools) === JSON.stringify(listOfAllCompleted))
+            {
+                return true;
+            }
+        return false;
+    }
+
+    function setActiveGroup() {
+        // get the active items at the current group minus 1 because arrays index at 0
+        listOfActiveItems = groupedPools[currentGroup - 1];
+
+        if (listOfActiveItems == null)
+            {
+                return;
+            }
+
+        for (var i = 0; i < listOfActiveItems.length; i ++)
+            {
+                img = document.getElementById(listOfActiveItems[i]);
+                document.getElementById(listOfActiveItems[i]).src = img.src.replace("{% static 'imageInteraction/WellImage_empty.PNG' %}", "{% static 'imageInteraction/WellImage_active.png' %}");
+            }
+        testTube = document.getElementById("testTubeGroup_" + currentGroup)
+        document.getElementById("testTubeGroup_" + currentGroup).src = testTube.src.replace("{% static 'imageInteraction/testTube_empty.png' %}", "{% static 'imageInteraction/testTube_active.png' %}");
+
+    }
+
+    function arraysEqual(a, b) {
+        if (a === b) return true;
+        if (a == null || b == null) return false;
+        if (a.length !== b.length) return false;
+
+        // If you don't care about the order of the elements inside
+        // the array, you should sort both arrays here.
+        // Please note that calling sort on an array will modify that array.
+        // you might want to clone your array first.
+
+        a.sort();
+        b.sort();
+
+        for (var i = 0; i < a.length; ++i) {
+            if (a[i] !== b[i]) return false;
+        }
+  return true;
+    }
+
+    function arrayRemove(arr, value) {
+
+        return arr.filter(function(ele){
+            return ele != value;
+        });
+    }
+
+    function isNext() {
+
+        img = document.getElementById(currentlySelectedGroup[0]);
+
+        console.log(currentlySelectedGroup);
+        console.log(groupedPools[currentGroup - 1]);
+
+        if (arraysEqual(currentlySelectedGroup, groupedPools[currentGroup-1]))
+            {
+            currentGroup += 1;
+            replaceWithGrey(img);
+            listOfAllCompleted.push(currentlySelectedGroup);
+            currentlySelectedGroup = [];
+            setActiveGroup();
+            }
+
+        if (checkCompletion())
+            {
+                var selectedPositive = [];
+                var numberOfGroups = groupedPools.length;
+                for (var i = 1; i <= numberOfGroups; i++)
+                    {
+                        if (document.getElementById("testTubeGroup_" + i).src.includes("{% static 'imageInteraction/testTube_positive.png' %}"))
+                            {
+                                selectedPositive.push(i);
+                            }
+                    }
+                if (selectedPositive.length != 0)
+                    {
+                        if (confirm("You have selected the following groups:\n" + selectedPositive))
+                            {
+                                alert("Moving to next stage");
+                            }
+                        else
+                            {
+                                alert("Not moving to next stage");
+                            }
+                    }
+
+
+
+            }
+    }
+
+    function replaceWithGrey() {
+
+
+
+        for (var i = 0; i < currentlySelectedGroup.length; i ++)
+            {
+                img = document.getElementById(currentlySelectedGroup[i]);
+                anchor = document.getElementById(currentlySelectedGroup[i] + "-anchor");
+                anchor.setAttribute("data-highlight", "complete");
+                document.getElementById(currentlySelectedGroup[i]).src = img.src.replace("{% static 'imageInteraction/WellImage_filled.png' %}", "{% static 'imageInteraction/WellImage_filledgrey.png' %}");
+            }
+        testTube = document.getElementById("testTubeGroup_" + (currentGroup - 1));
+        console.log(currentGroup);
+        document.getElementById("testTubeGroup_" + (currentGroup - 1)).src = testTube.src.replace("{% static 'imageInteraction/testTube_active.png' %}", "{% static 'imageInteraction/testTube_nonpositive.png' %}");
+    }
+
+
+    function changeImage(img) {
+        var id = img.id;
+
+        console.log(currentGroup);
+
+        if (document.getElementById(id).src.includes("{% static 'imageInteraction/WellImage_active.png' %}"))
+            {
+
+                if ( groupedPools[currentGroup - 1].includes(id) )
+                    {
+                    currentlySelectedAll.push(id);
+                    currentlySelectedGroup.push(id);
+                    document.getElementById(id).src = img.src.replace("{% static 'imageInteraction/WellImage_active.png' %}", "{% static 'imageInteraction/WellImage_filled.png' %}");
+                    console.log(currentlySelectedGroup);
+                    }
+
+
+            }
+        else
+            {
+                if ( id.includes(currentGroup) )
+                    {
+                        document.getElementById(id).src = img.src.replace("{% static 'imageInteraction/WellImage_filled.png' %}", "{% static 'imageInteraction/WellImage_active.png' %}");
+
+
+                        for (var i = 0; i < currentlySelectedGroup.length; i++)
+                            {
+                                if (currentlySelectedGroup[i] == id)
+                                    {
+                                        console.log("removed" + id);
+                                        currentlySelectedGroup = arrayRemove(currentlySelectedGroup, id);
+                                    }
+                            }
+                        for (var i = 0; i < currentlySelectedAll.length; i++)
+                            {
+                                if (currentlySelectedAll[i] == id)
+                                    {
+                                        currentlySelectedAll = arrayRemove(currentlySelectedAll, id);
+                                    }
+                            }
+                        console.log(currentlySelectedGroup);
+                        //currentlySelectedGroup = [];
+                    }
+            }
+
+
+    }
+</script>
+</html>
