@@ -13,7 +13,7 @@ export class MainPage implements OnInit {
   constructor(private authService: AuthenticationService, private router: Router, private inAppBrowser: InAppBrowser) {}
 
   redirect() {
-    this.inAppBrowser.create("http://127.0.0.1:8001/polls/");
+    this.inAppBrowser.create("http://127.0.0.1:8000/imageInteraction/");
    }
  
   async logout() {
