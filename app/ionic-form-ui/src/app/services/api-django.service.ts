@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { retry } from 'rxjs/operators';
+import { retry, tap } from 'rxjs/operators';
 import { AlertController ,LoadingController} from '@ionic/angular';
+import { Plugins } from '@capacitor/core';
+
+
+const { Storage } = Plugins;
 
 @Injectable({
   providedIn: 'root'
@@ -17,29 +21,37 @@ export class ApiDjangoService {
     loader: any;
     expireDate: any;
     isOnline = false;
-    urlPwdOublie: string = '';
+    //urlPwdOublie: string = '';
     checkUrl: string = '';
     cordovaiOS = false;
     isShowingLoader = false;
     getUserUrl = this.virtualHostName + this.apiPrefix + "/users/"
+    getProtocolUrl = this.virtualHostName + this.apiPrefix + "/protocols/"
+	  getExperimentUrl = this.virtualHostName + this.apiPrefix + "/experiments/"
+    getAuthUserUrl = this.virtualHostName + "/auth/users/";
+    //getMyUrl = this.virtualHostName + "/auth/users/me/";
+    getLoginUrl = this.virtualHostName +  "/auth/jwt/create/";
+    refreshtokenUrl = this.virtualHostName +  "/auth/jwt/refresh/";
+    urlPwdOublie = this.virtualHostName + "/account/reset_password";
     getCustomUserUrl : string =''
 
   constructor(private http:HttpClient,
     public loadingController: LoadingController,
     public alertCtrl: AlertController) { }
 
-  getUsers() {
+  /////////////////////////////
+  //DONT KNOW WHERE I USE THIS METHOD BELOW
+  /////////////////////////////
+  getUserNow() {
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
     };
 
-    let url = this.getUserUrl
+    let url = this.getAuthUserUrl
 
-    return Observable.create(observer => {
-      // At this point make a request to your backend  
-      console.log("on appelle BACKEND encoded url " + url);
+    return new Observable(observer => {
       this.http.get(url, options)
         .pipe(retry(1))
         .subscribe(res => {
@@ -52,6 +64,7 @@ export class ApiDjangoService {
         });
     });
   }
+  /////////////////////////////////////////////////
 
   findUser(path){
     const options = {
@@ -78,6 +91,77 @@ export class ApiDjangoService {
     });
   }
 
+  public setLocalData(key, jsonData){
+    return new Promise(async resolve => {
+      await Storage.set({key:`${this.virtualHostName}-${key}`,value:JSON.stringify(jsonData)})
+      resolve(true)
+    });
+  }
+
+  public getLocalData(key){
+    return new Promise(async resolve => {
+      let ret = await Storage.get({key:`${this.virtualHostName}-${key}`}) 
+            
+            if (ret.value){
+                resolve( JSON.parse(ret.value))
+            }
+            else{
+                resolve(null)
+            }
+        });
+  }
+
+  public removeLocalData(key){
+    return new Promise(async resolve => {
+      let ret = await Storage.remove({key:`${this.virtualHostName}-${key}`}) 
+    });
+  }
+
+
+  refreshToken(token){
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    let input = {
+      "refresh":token
+    }
+    let url = this.refreshtokenUrl;
+    console.log("=== On demand refresh token with ", input)
+    return this.http.post(url, input, options).pipe(
+      tap(response => {
+      console.log("=== Refresh Response", response)
+      this.setLocalData("access",{"access":response["access"]})
+      this.setLocalData("refresh",{"refresh":response["refresh"]})
+      })
+    );
+  }
+  
+  login(user){
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    
+    let url = this.getLoginUrl;
+
+    return Observable.create(observer => {
+      this.http.post(url, user, options).subscribe(
+        (res) => {
+          observer.next(res);
+          observer.complete();
+        }, 
+        error => {
+          observer.next();
+          observer.complete();
+          console.log(error);// Error getting the data
+        });
+    });
+  }
+
+  //This is where the user will be registered
   createUser(user){
     
     const options = {
@@ -86,13 +170,14 @@ export class ApiDjangoService {
       })
     };
     
-    let url = this.getUserUrl;
+    let url = this.getAuthUserUrl;
+
+    //console.log("url" + url);
 
     return Observable.create(observer => {
       // At this point make a request to your backend  
       console.log("on appelle BACKEND encoded url " + url);
       this.http.post(url, user, options)
-        .pipe(retry(1))
         .subscribe(res => {
           observer.next(res);
           observer.complete();
@@ -103,6 +188,157 @@ export class ApiDjangoService {
         });
     });
   }
+
+  sendResetPasswordLink(email) {
+    let httpOptions = {
+     headers: new HttpHeaders({
+       'content-type': "application/json",
+       })
+     }; 
+    let postParams = {'email_or_username=' : email}
+    let url = this.urlPwdOublie;
+    Observable.create(observer => {
+      // At this point make a request to your backend to make a real check!
+      this.http.post(url, postParams, httpOptions)
+          .pipe(retry(1))
+          .subscribe(res => {
+              this.networkConnected = true
+              observer.next(true);
+              observer.complete();
+          }, error => {
+              observer.next(false);
+              observer.complete();
+              console.log(error);// Error getting the data
+          });
+  });
+ }
+
+ getProtocols() {
+  const options = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+
+  let url = this.getProtocolUrl;
+
+  return Observable.create(observer => {
+    // At this point make a request to your backend  
+    console.log("on appelle BACKEND encoded url " + url);
+    this.http.get(url, options)
+      .pipe(retry(1))
+      .subscribe(res => {
+        observer.next(res);
+        observer.complete();
+      }, error => {
+        observer.next();
+        observer.complete();
+        console.log(error);// Error getting the data
+      });
+  });
+}
+
+findProtocol(path){
+  const options = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+  
+  let url = this.getProtocolUrl+path;
+
+  return Observable.create(observer => {
+    // At this point make a request to your backend  
+    console.log("on appelle BACKEND encoded url " + url);
+    this.http.get(url, options)
+      .pipe(retry(1))
+      .subscribe(res => {
+        observer.next(res);
+        observer.complete();
+      }, error => {
+        observer.next();
+        observer.complete();
+        console.log(error);// Error getting the data
+      });
+  });
+}
+
+createProtocol(protocol){
+  
+  const options = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+  
+  let url = this.getProtocolUrl;
+
+  return Observable.create(observer => {
+    // At this point make a request to your backend  
+    console.log("on appelle BACKEND encoded url " + url);
+    this.http.post(url, protocol, options)
+      .pipe(retry(1))
+      .subscribe(res => {
+        observer.next(res);
+        observer.complete();
+      }, error => {
+        observer.next();
+        observer.complete();
+        console.log(error);// Error getting the data
+      });
+  });
+}
+
+getExperiments() {
+  const options = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+
+  let url = this.getExperimentUrl;
+
+  return Observable.create(observer => {
+    // At this point make a request to your backend  
+    console.log("on appelle BACKEND encoded url " + url);
+    this.http.get(url, options)
+      .pipe(retry(1))
+      .subscribe(res => {
+        observer.next(res);
+        observer.complete();
+      }, error => {
+        observer.next();
+        observer.complete();
+        console.log(error);// Error getting the data
+      });
+  });
+}
+
+createExperiment(experiment){
+  
+  const options = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+  
+  let url = this.getExperimentUrl;
+
+  return Observable.create(observer => {
+    // At this point make a request to your backend  
+    console.log("on appelle BACKEND encoded url " + url);
+    this.http.post(url, experiment, options)
+      .pipe(retry(1))
+      .subscribe(res => {
+        observer.next(res);
+        observer.complete();
+      }, error => {
+        observer.next();
+        observer.complete();
+        console.log(error);// Error getting the data
+      });
+  });
+}
 
   async showLoading() {
      

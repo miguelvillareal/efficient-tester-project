@@ -2,11 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, tap, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
+import {ApiDjangoService} from '../services/api-django.service';
  
 import { Plugins } from '@capacitor/core';
 const { Storage } = Plugins;
- 
-const TOKEN_KEY = 'my-token';
+
+export var myID:string;
+
+const TOKEN_KEY = 'access';
+const REFRESH_TOKEN_KEY = 'refresh';
  
 @Injectable({
   providedIn: 'root'
@@ -15,42 +19,74 @@ export class AuthenticationService {
   // Init with null to filter out the first value in a guard!
   isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   token = '';
+  refresh = '';
  
-  constructor(private http: HttpClient) {
+  constructor(private apiService: ApiDjangoService) {
     this.loadToken();
   }
  
-  async loadToken() {
-    const token = await Storage.get({ key: TOKEN_KEY });    
-    if (token && token.value) {
-      console.log('set token: ', token.value);
-      this.token = token.value;
-      this.isAuthenticated.next(true);
-    } else {
+  loadToken() {
+    this.apiService.getLocalData(TOKEN_KEY).then((value:string)=>{    
+    if (value) {
+      console.log('set token: ', value);
+      this.token = value["access"];
+      this.apiService.getLocalData(REFRESH_TOKEN_KEY).then((value:string)=>{
+        this.refresh=value["refresh"]
+        this.isAuthenticated.next(true);
+      }) 
+    }
+    else {
       this.isAuthenticated.next(false);
     }
+  })
   }
-  login(credentials: {email, password}): Observable<any> {
 
-    const options = {
-      headers: new HttpHeaders({
-          'Content-Type': 'application/json'
+  login(user){
+    return new Promise(async resolve => {
+      this.apiService.login(user).subscribe((result)=>{
+         if (result) {
+            let accessToken = result["access"]
+            let refreshToken = result["refresh"]
+            this.apiService.setLocalData("access",{"access":accessToken})
+            this.apiService.setLocalData("refresh",{"refresh":refreshToken})
+            this.token = accessToken;
+            this.refresh=refreshToken
+            this.isAuthenticated.next(true);
+           
+          
+           resolve(true)
+          }
+        else{
+          resolve(false)
+        }
         })
-    };
+      let queryPath = "?email=" + user.email;
+      this.apiService.findUser(queryPath).subscribe((listUser) => { 
+         console.log(JSON.stringify(listUser))
+         if(listUser){
+           myID = listUser["results"][0]["id"];
+           this.apiService.setLocalData("id",{"id": myID})
+           console.log("saved ID")
+           console.log(myID)
 
-    return this.http.post(`http://127.0.0.1:8000/api/users/`, credentials, options).pipe(
-      map((data: any) => data.token),
-      switchMap(token => {
-        return from(Storage.set({key: TOKEN_KEY, value: token}));
-      }),
-      tap(_ => {
-        this.isAuthenticated.next(true);
+         }
       })
-    )
+    })
   }
  
   logout(): Promise<void> {
     this.isAuthenticated.next(false);
-    return Storage.remove({key: TOKEN_KEY});
+    return new Promise(async resolve => {
+      this.apiService.removeLocalData(TOKEN_KEY).then(()=>{
+         this.apiService.removeLocalData(REFRESH_TOKEN_KEY).then(()=>{
+           resolve()
+         }
+       )
+      });
+   })
+  }
+
+  refreshToken(){
+    return this.apiService.refreshToken(this.refresh)
   }
 }
