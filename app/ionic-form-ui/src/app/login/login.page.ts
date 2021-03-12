@@ -20,22 +20,58 @@ export class LoginPage implements OnInit {
     public apiService: ApiDjangoService,
     private loadingController: LoadingController
   ) {}
+
+  async  forgotPassword()  { 
+    const alert = await this.alertController.create({
+     header:"Please enter your email",
+     message:"We will send you a password reset link",
+     inputs: [
+       {
+         name: 'email',
+         type: 'text'
+       }],    
+      buttons: [
+           {
+             text: 'Cancel',
+             role: 'cancel',
+             cssClass: 'secondary',
+             handler: () => {
+               console.log('Confirm Cancel');
+             }
+           }, {
+             text: 'Ok',
+             handler: (alertData) => { //takes the data 
+               console.log(alertData.email);
+               if (alertData.email){
+                 this.apiService.sendResetPasswordLink(alertData.email)
+               }
+               else{
+                 //Display error message
+                 this.apiService.showError("Something went wrong");
+               }
+           }
+           }
+         ]
+ });
+ await alert.present();
+ } 
  
   ngOnInit() {}
  
   async login() {
-    //const loading = await this.loadingController.create();
-    //await loading.present();
+
     if(this.apiService.networkConnected){
       this.apiService.showLoading();
-      let queryPath = "?email=" + this.registerCredentials.email + "&password=" + this.registerCredentials.password;
-      this.apiService.findUser(queryPath).subscribe((listUsers) => {
+      //let queryPath = "?email=" + this.registerCredentials.email + "&password=" + this.registerCredentials.password;
+      let userToLogin = {
+        "email": this.registerCredentials.email,
+        "password": this.registerCredentials.password,
+      }
+      this.authService.login(userToLogin).then((listUsers) => {
         this.apiService.stopLoading();
         if (listUsers) {
-          console.log("Find " + JSON.stringify(listUsers));
+          //console.log("Find " + JSON.stringify(listUsers));
           this.router.navigateByUrl('/main');
-
-
         }
         else {
           this.apiService.stopLoading();
