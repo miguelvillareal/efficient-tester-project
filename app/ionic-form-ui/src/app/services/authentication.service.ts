@@ -8,6 +8,7 @@ import { Plugins } from '@capacitor/core';
 const { Storage } = Plugins;
 
 export var myID:string;
+export var myEmail:string;
 
 const TOKEN_KEY = 'access';
 const REFRESH_TOKEN_KEY = 'refresh';
@@ -60,14 +61,18 @@ export class AuthenticationService {
           resolve(false)
         }
         })
+        this.apiService.getProtocols().subscribe((data) => {
+          console.log(data);
+        });
       let queryPath = "?email=" + user.email;
       this.apiService.findUser(queryPath).subscribe((listUser) => { 
-         console.log(JSON.stringify(listUser))
+         //console.log(JSON.stringify(listUser))
          if(listUser){
            myID = listUser["results"][0]["id"];
+           //myEmail = listUser["results"][0]["email"];
            this.apiService.setLocalData("id",{"id": myID})
-           console.log("saved ID")
-           console.log(myID)
+           //console.log("saved ID")
+           //console.log(myID)
 
          }
       })

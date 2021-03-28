@@ -27,12 +27,13 @@ export class ApiDjangoService {
     isShowingLoader = false;
     getUserUrl = this.virtualHostName + this.apiPrefix + "/users/"
     getProtocolUrl = this.virtualHostName + this.apiPrefix + "/protocols/"
+    getLabGroupUrl = this.virtualHostName + this.apiPrefix + "/labgroups/"
 	  getExperimentUrl = this.virtualHostName + this.apiPrefix + "/experiments/"
     getAuthUserUrl = this.virtualHostName + "/auth/users/";
     //getMyUrl = this.virtualHostName + "/auth/users/me/";
     getLoginUrl = this.virtualHostName +  "/auth/jwt/create/";
     refreshtokenUrl = this.virtualHostName +  "/auth/jwt/refresh/";
-    urlPwdOublie = this.virtualHostName + "/account/reset_password";
+    urlPwdOublie = this.virtualHostName + "/account/reset_password/";
     getCustomUserUrl : string =''
 
   constructor(private http:HttpClient,
@@ -190,23 +191,22 @@ export class ApiDjangoService {
   }
 
   sendResetPasswordLink(email) {
-    let httpOptions = {
+    const options = {
      headers: new HttpHeaders({
-       'content-type': "application/json",
+       'Content-type': "application/x-www-form-urlencoded",
        })
      }; 
-    let postParams = {'email_or_username=' : email}
+    let postParams = {'email' : email,}
     let url = this.urlPwdOublie;
-    Observable.create(observer => {
+    return Observable.create(observer => {
       // At this point make a request to your backend to make a real check!
-      this.http.post(url, postParams, httpOptions)
+      this.http.post(url, postParams, options)
           .pipe(retry(1))
           .subscribe(res => {
-              this.networkConnected = true
-              observer.next(true);
+              observer.next(res);
               observer.complete();
           }, error => {
-              observer.next(false);
+              observer.next();
               observer.complete();
               console.log(error);// Error getting the data
           });
@@ -226,6 +226,57 @@ export class ApiDjangoService {
     // At this point make a request to your backend  
     console.log("on appelle BACKEND encoded url " + url);
     this.http.get(url, options)
+      .pipe(retry(1))
+      .subscribe(res => {
+        observer.next(res);
+        observer.complete();
+      }, error => {
+        observer.next();
+        observer.complete();
+        console.log(error);// Error getting the data
+      });
+  });
+}
+
+getLabGroups() {
+  const options = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+
+  let url = this.getLabGroupUrl;
+
+  return Observable.create(observer => {
+    // At this point make a request to your backend  
+    console.log("on appelle BACKEND encoded url " + url);
+    this.http.get(url, options)
+      .pipe(retry(1))
+      .subscribe(res => {
+        observer.next(res);
+        observer.complete();
+      }, error => {
+        observer.next();
+        observer.complete();
+        console.log(error);// Error getting the data
+      });
+  });
+}
+
+createLabGroups(labgroup){
+  
+  const options = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+  
+  let url = this.getLabGroupUrl;
+
+  return Observable.create(observer => {
+    // At this point make a request to your backend  
+    console.log("on appelle BACKEND encoded url " + url);
+    this.http.post(url, labgroup, options)
       .pipe(retry(1))
       .subscribe(res => {
         observer.next(res);
