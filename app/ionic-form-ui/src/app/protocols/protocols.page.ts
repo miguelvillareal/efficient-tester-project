@@ -14,6 +14,8 @@ import {myID} from 'src/app/services/authentication.service';
 export class ProtocolsPage implements OnInit{
 
   protocolCredentials = { name: '', plateType: '', numSamples: '', posRate: ''};
+  
+  selectedItem?: Item;
 
   infoAboutMe : any;
 
@@ -31,23 +33,16 @@ export class ProtocolsPage implements OnInit{
     private toastController: ToastController, 
     private authService: AuthenticationService, 
     private router: Router) {
-    /** 
+     
     this.plt.ready().then(() => {
       this.loadItems();
     });
-    */
+    
   }
 
   addProtocol(){
     if (this.ApiService.networkConnected) {
       this.ApiService.showLoading();
-      //let queryPath = '?name=' + this.protocolCredentials.name + "&suspected_pos_rate=" + this.protocolCredentials.posRate;
-      //this.ApiService.findProtocol(queryPath).subscribe((listProtocol) => {
-          //this.ApiService.stopLoading()
-          //console.log(JSON.stringify(listProtocol))
-          //if (listProtocol) {
-            //let nbProtocolFound = listProtocol["count"]
-            //if (nbProtocolFound==0){
               console.log(myID);
               let protocolToCreate = {
                 "name": this.protocolCredentials.name,
@@ -80,34 +75,44 @@ export class ProtocolsPage implements OnInit{
       //});
     }
   }
+  
+  redirect() {
+    this.router.navigateByUrl("/experiments");
+   }
+  
+  onSelect(item: Item): void {
+	  this.selectedItem = item;
+	  this.redirect();
+  }
+  
     /** 
     this.newItem.modified = Date.now();
     this.newItem.id = Date.now();
-
     this.storageService.addItem(this.newItem).then(item => {
       this.newItem = <Item>{};
       //this.showToast('Item added!')
       this.loadItems();
     });
   }
+  **/
 
   loadItems(){
-    this.storageService.getItems().then(items => {
-      this.items = items;
+    this.ApiService.getProtocols().subscribe(items => {
+      this.items = items["results"];
+	  console.log(items["results"]);
     });
   }
 
+  /**
   updateItem(item: Item){
     item.title = 'UPDATED: ${item.title}';
     item.modified = Date.now();
-
     this.storageService.updateItem(item).then(item => {
       this.showToast('Item updated!');
       this.mylist.closeSlidingItems();
       this.loadItems();
     });
   }
-
   deleteItem(item: Item){
     this.storageService.deleteItem(item.id).then(item => {
       this.showToast('Item removed!');
@@ -115,7 +120,6 @@ export class ProtocolsPage implements OnInit{
       this.loadItems();
     });
   }
-
   async showToast(msg) {
     const toast = await this.toastController.create({
       message: msg,

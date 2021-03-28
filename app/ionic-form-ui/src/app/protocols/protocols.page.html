@@ -19,6 +19,12 @@
         </ion-button>
       </ion-item>
       <ion-item>
+        <ion-button [routerLink]="['/lab-group']">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-label>Lab Group</ion-label>
+        </ion-button>
+      </ion-item>
+      <ion-item>
         <ion-button [routerLink]="['/settings']">
           <ion-icon name="person-outline" slot="start"></ion-icon>
           <ion-label>Profile</ion-label>
@@ -68,21 +74,21 @@
 
       <ion-button expand="full" type="submit" >Add Protocol!</ion-button>
     </form>
-    <!--  
+    
     <ion-list #mylist>
 
       <ion-list-header>
         <ion-label>My Protocols</ion-label>
       </ion-list-header>
 
-      <ion-item-sliding *ngFor="let item of items">
+      <ion-item-sliding *ngFor="let item of items" (click)="onSelect(item)">
         <ion-item>
           <ion-label text-wrap>
-            <h3>{{ item.tests }}</h3>
-            <h3>{{ item.size }}</h3>
-            <h3>{{ item.title }}</h3>
+            <h3>Name: {{ item.name }}</h3>
+            <h3>Plate Type: {{ item.plate_type }}</h3>
+            <h3>Number of Samples: {{ item.num_samples }}</h3>
             <ion-text color="secondary">
-              <p>{{ item.value}}</p>
+              <p> Positive Rate: {{ item.suspected_pos_rate}}</p>
             </ion-text>
             <p>{{ item.modified | date:'short'}}</p>
           </ion-label>
@@ -94,6 +100,6 @@
       </ion-item-sliding>
 
     </ion-list>
-    -->
+
   </ion-content>
 </div>
