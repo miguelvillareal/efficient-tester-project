@@ -32,6 +32,11 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+#Email configuration
+DEFAULT_FROM_EMAIL=""
+SENDGRID_API_KEY=""
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -46,6 +51,7 @@ INSTALLED_APPS = [
     'rest_framework_mongoengine',
     'django_filters',
     'djoser',
+    'resetpassword',
 ]
 
 MIDDLEWARE = [
