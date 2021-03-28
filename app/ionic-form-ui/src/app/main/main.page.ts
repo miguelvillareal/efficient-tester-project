@@ -1,7 +1,7 @@
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+
 
 @Component({
   selector: 'app-main',
@@ -10,12 +10,8 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 })
 export class MainPage implements OnInit {
 
-  constructor(private authService: AuthenticationService, private router: Router, private inAppBrowser: InAppBrowser) {}
+  constructor(private authService: AuthenticationService, private router: Router) {}
 
-  redirect() {
-    this.inAppBrowser.create("http://127.0.0.1:8000/imageInteraction/");
-   }
- 
   async logout() {
     await this.authService.logout();
     this.router.navigateByUrl('/', { replaceUrl: true });
