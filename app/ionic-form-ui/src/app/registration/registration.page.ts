@@ -42,12 +42,12 @@ export class RegistrationPage implements OnInit {
             if (nbUserFound==0){
               let userToCreate = {
                 "email": this.registerCredentials.email,
-                //"username": this.registerCredentials.username,
-                //"firstName": this.registerCredentials.firstName,
-                //"lastName": this.registerCredentials.lastName,
-                "password": this.registerCredentials.password
-                //"is_active": true,
-                //"is_staff": false
+                "username": this.registerCredentials.username,
+                "firstName": this.registerCredentials.firstName,
+                "lastName": this.registerCredentials.lastName,
+                "password": this.registerCredentials.password,
+                "is_active": true,
+                "is_staff": false
               }
   
               this.apiService.createUser(userToCreate).subscribe((resultat) => {
