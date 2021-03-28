@@ -43,7 +43,13 @@ export class LoginPage implements OnInit {
              handler: (alertData) => { //takes the data 
                console.log(alertData.email);
                if (alertData.email){
-                 this.apiService.sendResetPasswordLink(alertData.email)
+                 //this.apiService.sendResetPasswordLink(alertData.email)
+
+                 this.apiService.showLoading().then(()=>{
+                  this.apiService.sendResetPasswordLink(alertData.email).subscribe(()=>{
+                    this.apiService.stopLoading()
+                 })
+               })
                }
                else{
                  //Display error message
