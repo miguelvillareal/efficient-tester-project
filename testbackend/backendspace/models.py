@@ -5,6 +5,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from backendspace.UserManager import UserManager
 from django.contrib.auth.hashers import get_hasher, identify_hasher
+from jsonfield import JSONField
 import uuid
 
 # Models created Here.
@@ -68,12 +69,15 @@ class Protocols(models.Model):
     #lab_group = models.ForeignKey(LabGroup, on_delete=models.CASCADE)
 
 class Experiment(models.Model):
-    protocol_used = models.ForeignKey('Protocols', on_delete=models.CASCADE)
-    associated_images = models.ImageField(blank=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    protocol_used = models.ForeignKey('Protocols', on_delete=models.CASCADE, blank=True)
     completed_status = models.BooleanField(('completed'), default=False)
-    user_notes = models.TextField(blank=True)
+    user_notes = JSONField(blank=True)
     step_num = models.PositiveSmallIntegerField()
     plaintext_data = models.FileField(blank=True)
+    current_interaction = JSONField(blank=True)
+    date_last_accessed = models.DateTimeField(auto_now=True)
+
 
 class LabGroup(models.Model):
     name = models.CharField('Lab Group Name', max_length=120)
