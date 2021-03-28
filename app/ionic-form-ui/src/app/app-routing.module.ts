@@ -39,6 +39,10 @@ const routes: Routes = [
     path: 'experiments',
     loadChildren: () => import('./experiments/experiments.module').then( m => m.ExperimentsPageModule)
   },
+  {
+    path: 'lab-group',
+    loadChildren: () => import('./lab-group/lab-group.module').then( m => m.LabGroupPageModule)
+  },
 ];
 
 @NgModule({
