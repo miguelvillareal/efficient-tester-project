@@ -31,7 +31,6 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.get_queryset().order_by('id')
     serializer_class = UserSerializer
 
-
 class ExperimentListCreateView(generics.ListCreateAPIView):
     """
             create:
@@ -40,6 +39,20 @@ class ExperimentListCreateView(generics.ListCreateAPIView):
                 Search or get Experiments
     """
     queryset = Experiment.objects.get_queryset().order_by('step_num')
+    serializer_class = ExperimentSerializer
+
+class ExperimentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+            get:
+                get a specific Experiment
+            delete:
+                Remove an existing Experiment.
+            patch:
+                Update one or more fields on an existing Experiment.
+            put:
+                Update a Experiment.
+    """
+    queryset = Experiment.objects.get_queryset().order_by('id')
     serializer_class = ExperimentSerializer
 
 class ProtocolsListCreateView(generics.ListCreateAPIView):
@@ -51,6 +64,8 @@ class ProtocolsListCreateView(generics.ListCreateAPIView):
     """
     queryset = Protocols.objects.get_queryset().order_by('name')
     serializer_class = ProtocolsSerializer
+
+
 
 class LabGroupListCreateView(generics.ListCreateAPIView):
     """
