@@ -19,6 +19,12 @@
         </ion-button>
       </ion-item>
       <ion-item>
+        <ion-button [routerLink]="['/lab-group']">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-label>Lab Group</ion-label>
+        </ion-button>
+      </ion-item>
+      <ion-item>
         <ion-button [routerLink]="['/settings']">
           <ion-icon name="person-outline" slot="start"></ion-icon>
           <ion-label>Profile</ion-label>
@@ -44,54 +50,52 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-content fullscreen>
-    <ion-list>
+  <ion-content>
+    <form (ngSubmit)="addExperiment()" #registerForm="ngForm">
+      <ion-item>
+        <ion-label position="fixed">User Notes</ion-label>
+        <ion-input type="text" name="myNotes" [(ngModel)]="experimentCredentials.myNotes"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="fixed">Step Number</ion-label>
+        <ion-input type="number" name="stepNum" [(ngModel)]="experimentCredentials.stepNum"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="fixed">Protocol ID Used</ion-label>
+        <ion-input type="number" name="protUsed" [(ngModel)]="experimentCredentials.protUsed"></ion-input>
+      </ion-item>
+
+
+      <ion-button expand="full" type="submit" >Add experiment!</ion-button>
+    </form>
+
+    <ion-list #mylist>
+
       <ion-list-header>
-        Active Experiments
+        <ion-label>My Experiments</ion-label>
       </ion-list-header>
 
-      <ion-item>
-        <ion-label>
-          <h2>Protocol 1: Covid-19</h2>
-          <p>Stage : 1</p>
-        </ion-label>
-      </ion-item>
+      <ion-item-sliding *ngFor="let item of items" (click)="onSelect(item)">
 
-      <ion-item>
-        <ion-label>
-          <h2>Protocol 1: Covid-19</h2>
-          <p>Stage : 2</p>
-        </ion-label>
-      </ion-item>
+        <ion-item>
+          <ion-label text-wrap>
+            <h3>Step Number: {{ item.step_num }}</h3>
+            <h3>Protocol ID Used: {{ item.protocol_used }}</h3>
+            <ion-text color="secondary">
+              <p>Notes: {{ item.user_notes}}</p>
+            </ion-text>
+            <p>{{ item.modified | date:'short'}}</p>
+          </ion-label>
+        </ion-item>
 
-      <ion-item>
-        <ion-label>
-          <h2>Protocol 1: Covid-19</h2>
-          <p>Stage : 1</p>
-        </ion-label>
-      </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="secondary" (click)="deleteItem(item)">Delete</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
 
     </ion-list>
 
-    <ion-list>
-      <ion-list-header>
-        Completed Experiments
-      </ion-list-header>
-
-      <ion-item>
-        <ion-label>
-          <h2>Protocol 1: Covid-19</h2>
-          <p>Finished</p>
-        </ion-label>
-      </ion-item>
-
-      <ion-item>
-        <ion-label>
-          <h2>Protocol 1: Covid-19</h2>
-          <p>Finished</p>
-        </ion-label>
-      </ion-item>
-
-    </ion-list>
   </ion-content>
 </div>
