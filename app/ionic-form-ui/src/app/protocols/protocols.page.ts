@@ -6,6 +6,8 @@ import { StorageService, Item } from 'src/app/services/storage.service';
 import { ApiDjangoService } from '../services/api-django.service';
 import {myID} from 'src/app/services/authentication.service';
 
+export var protocolID:number;
+
 @Component({
   selector: 'app-protocols',
   templateUrl: './protocols.page.html',
@@ -56,6 +58,7 @@ export class ProtocolsPage implements OnInit{
               this.ApiService.createProtocol(protocolToCreate).subscribe((res) => {
                 if (res) {
                   console.log(res)
+                  this.loadItems();
                 }
                 else {
                   this.ApiService.stopLoading();
@@ -75,13 +78,16 @@ export class ProtocolsPage implements OnInit{
       //});
     }
   }
+
   
   redirect() {
     this.router.navigateByUrl("/experiments");
    }
   
   onSelect(item: Item): void {
-	  this.selectedItem = item;
+    this.selectedItem = item;
+    protocolID = item.id;
+    console.log(protocolID)
 	  this.redirect();
   }
   
