@@ -6,6 +6,7 @@ import { StorageService, Item } from 'src/app/services/storage.service';
 import { ApiDjangoService } from '../services/api-django.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import {myID} from 'src/app/services/authentication.service';
+import {protocolID} from 'src/app/protocols/protocols.page';
 
 @Component({
   selector: 'app-experiments',
@@ -21,6 +22,8 @@ export class ExperimentsPage implements OnInit {
   infoAboutMe : any;
 
   items: Item[] = [];
+
+  displayList: Item[] = [];
 
   newItem: Item = <Item>{};
 
@@ -44,18 +47,20 @@ export class ExperimentsPage implements OnInit {
       this.ApiService.showLoading();
               console.log(myID);
               let experimentToCreate = {
-                "user_notes": this.experimentCredentials.myNotes,
+                "user_notes": '{}',
                 "step_num": this.experimentCredentials.stepNum,
-                "protocol_used": this.experimentCredentials.protUsed
+                "protocol_used": this.experimentCredentials.protUsed,
+                "current_interaction": '{}'
               }
   
               this.ApiService.createExperiment(experimentToCreate).subscribe((res) => {
                 if (res) {
                   console.log(res)
+                  this.loadItems();
                 }
                 else {
                   this.ApiService.stopLoading();
-                  this.ApiService.showError("An error occured while creating a Protocol")
+                  this.ApiService.showError("An error occured while creating a Experiment")
                 }
               });
             //}
@@ -84,8 +89,16 @@ export class ExperimentsPage implements OnInit {
 
   loadItems(){
     this.ApiService.getExperiments().subscribe(items => {
-      this.items = items["results"];
-	  console.log(items["results"]);
+      for (let index in items["results"]){
+        let currentItem = items["results"][index]["protocol_used"];
+        //console.log(currentItem)
+		 	  if(currentItem == protocolID){
+          console.log(currentItem)
+				  this.displayList.push(items["results"][index]);
+        }
+    }
+    console.log(this.displayList)
+	  //console.log(items["results"][3]["protocol_used"]);
     });
   }
 
