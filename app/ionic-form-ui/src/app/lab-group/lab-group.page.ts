@@ -123,9 +123,9 @@ export class LabGroupPage implements OnInit {
     toast.present();
   }
   **/
-  async logout() {
-    await this.authService.logout();
-    this.router.navigateByUrl('/', { replaceUrl: true });
+  logout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/home', { replaceUrl: true });
   }
 
   ngOnInit(){
