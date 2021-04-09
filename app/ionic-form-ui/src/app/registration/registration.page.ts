@@ -19,10 +19,14 @@ export class RegistrationPage implements OnInit {
   ngOnInit() {
   }
 
+
   register() {
 
     if (this.registerCredentials.password != this.registerCredentials.passwordbis) {
       this.apiService.showError("Sorry passwords doesn't match");
+    }
+    else if(this.registerCredentials.password.length < 8 ){
+      this.apiService.showError("Password has to be 8 or more characters");
     }
     else if (this.registerCredentials.username.length == 0 && this.registerCredentials.email.length == 0) {
       this.apiService.showError("Please enter your email and username");
@@ -52,13 +56,44 @@ export class RegistrationPage implements OnInit {
   
               this.apiService.createUser(userToCreate).subscribe((resultat) => {
                 if (resultat) {
-                  console.log(resultat)
+                  let queryPath = "?email=" + userToCreate.email;
+                  this.apiService.findUser(queryPath).subscribe((listUser) => { 
+                    if(listUser){
+                      //console.log(listUser.password)
+                      //console.log(listUser.id)
+                      let queryPathTwo = resultat.id;
+                      let setUserInfo = {
+                        "email": resultat.email,
+                        "username": this.registerCredentials.username,
+                        "firstName": this.registerCredentials.firstName,
+                        "lastName": this.registerCredentials.lastName
+                      }
+                      this.apiService.infoUser(queryPathTwo, setUserInfo).subscribe((myUser) => { 
+                        if(myUser){
+                          console.log(myUser);
+                        }
+                      });
+                      //myID = listUser["results"][0]["id"];
+                      //myEmail = listUser["results"][0]["email"];
+                      //this.apiService.setLocalData("id",{"id": myID})
+                      //console.log("saved ID")
+                      //console.log(myID)
+
+                    }
+                  })
+                  //console.log(resultat)
+
                 }
                 else {
                   this.apiService.stopLoading();
                   this.apiService.showError("An error occured while registering")
                 }
               });
+
+              //Put info about user in their profile
+
+              
+
             }
             else{
               this.apiService.showError("An account already exists for this email, please login");
