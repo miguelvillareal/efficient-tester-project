@@ -1,7 +1,10 @@
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {myID} from 'src/app/services/authentication.service';
+import {myUserName} from 'src/app/services/authentication.service';
+import {myEmail} from 'src/app/services/authentication.service';
+import {myFirstName} from 'src/app/services/authentication.service';
+import {myLastName} from 'src/app/services/authentication.service';
 
 
 @Component({
@@ -10,25 +13,20 @@ import {myID} from 'src/app/services/authentication.service';
   styleUrls: ['./settings.page.scss'],
 })
 export class SettingsPage implements OnInit {
-  public isTrue: boolean = false;
-  constructor(private authService: AuthenticationService, private router: Router) {}
- 
-  async logout() {
-    await this.authService.logout();
-    this.router.navigateByUrl('/', { replaceUrl: true });
-  }
-  ngOnInit() {
-    this.isTrue =false;
-    console.log(myID);
+  public userName : string = null;
+  public userEmail : string = null;
+  public userFirstName : string = null;
+  public userLastName : string = null;
+
+  constructor() {
+    this.userName = myUserName;
+    this.userEmail = myEmail;
+    this.userFirstName = myFirstName;
+    this.userLastName = myLastName;
   }
 
-  ShowHide (){
-    console.log(this.isTrue)
-    if(this.isTrue ==false){
-      this.isTrue= true
-    }
-    else{
-      this.isTrue = false;
-    }
+  ngOnInit() {
+    //console.log(myID);
   }
+
 }
