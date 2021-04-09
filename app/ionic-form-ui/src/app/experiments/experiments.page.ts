@@ -42,6 +42,7 @@ export class ExperimentsPage implements OnInit {
     });
     
   }
+
   addExperiment(){
     if (this.ApiService.networkConnected) {
       this.ApiService.showLoading();
@@ -100,6 +101,11 @@ export class ExperimentsPage implements OnInit {
     console.log(this.displayList)
 	  //console.log(items["results"][3]["protocol_used"]);
     });
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/home', { replaceUrl: true });
   }
 
   ngOnInit() {
