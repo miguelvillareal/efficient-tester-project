@@ -29,7 +29,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
                 Update a user.
     """
     queryset = User.objects.get_queryset().order_by('id')
-    serializer_class = UserSerializer
+    serializer_class = UserUpdateSerializer
 
 class ExperimentListCreateView(generics.ListCreateAPIView):
     """
@@ -76,3 +76,13 @@ class LabGroupListCreateView(generics.ListCreateAPIView):
     """
     queryset = LabGroup.objects.get_queryset().order_by('name')
     serializer_class = LabGroupSerializer
+
+class GroupMembershipListCreateView(generics.ListCreateAPIView):
+    """
+            create:
+                add GroupMembership
+            get:
+                Search or get GroupMembership
+    """
+    queryset = GroupMembership.objects.get_queryset().order_by('name')
+    serializer_class = GroupMembershipSerializer
