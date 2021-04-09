@@ -26,6 +26,7 @@ export class ApiDjangoService {
     cordovaiOS = false;
     isShowingLoader = false;
     getUserUrl = this.virtualHostName + this.apiPrefix + "/users/"
+    placeUserInfoUrl = this.virtualHostName + this.apiPrefix + "/user/"
     getProtocolUrl = this.virtualHostName + this.apiPrefix + "/protocols/"
     getLabGroupUrl = this.virtualHostName + this.apiPrefix + "/labgroups/"
 	  getExperimentUrl = this.virtualHostName + this.apiPrefix + "/experiments/"
@@ -91,6 +92,33 @@ export class ApiDjangoService {
         });
     });
   }
+
+  infoUser(path, user){
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    
+    let url = this.placeUserInfoUrl+path+"/";
+
+    return Observable.create(observer => {
+      // At this point make a request to your backend  
+      console.log("on appelle BACKEND encoded url " + url);
+      this.http.put(url, user, options)
+        .pipe(retry(1))
+        .subscribe(res => {
+          observer.next(res);
+          observer.complete();
+        }, error => {
+          observer.next();
+          observer.complete();
+          console.log(error);// Error getting the data
+        });
+    });
+  }
+
+
 
   public setLocalData(key, jsonData){
     return new Promise(async resolve => {
@@ -172,8 +200,6 @@ export class ApiDjangoService {
     };
     
     let url = this.getAuthUserUrl;
-
-    //console.log("url" + url);
 
     return Observable.create(observer => {
       // At this point make a request to your backend  

@@ -9,6 +9,9 @@ const { Storage } = Plugins;
 
 export var myID:string;
 export var myEmail:string;
+export var myFirstName:string;
+export var myLastName:string;
+export var myUserName:string;
 
 const TOKEN_KEY = 'access';
 const REFRESH_TOKEN_KEY = 'refresh';
@@ -62,14 +65,17 @@ export class AuthenticationService {
         }
         })
         this.apiService.getProtocols().subscribe((data) => {
-          console.log(data);
+          //console.log(data);
         });
       let queryPath = "?email=" + user.email;
       this.apiService.findUser(queryPath).subscribe((listUser) => { 
          //console.log(JSON.stringify(listUser))
          if(listUser){
            myID = listUser["results"][0]["id"];
-           //myEmail = listUser["results"][0]["email"];
+           myUserName = listUser["results"][0]["username"];
+           myEmail = listUser["results"][0]["email"];
+           myFirstName = listUser["results"][0]["firstName"];
+           myLastName = listUser["results"][0]["lastName"];
            this.apiService.setLocalData("id",{"id": myID})
            //console.log("saved ID")
            //console.log(myID)
