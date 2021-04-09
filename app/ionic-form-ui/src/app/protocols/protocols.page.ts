@@ -134,10 +134,6 @@ export class ProtocolsPage implements OnInit{
     toast.present();
   }
   **/
-  async logout() {
-    await this.authService.logout();
-    this.router.navigateByUrl('/', { replaceUrl: true });
-  }
 
   ngOnInit(){
 
