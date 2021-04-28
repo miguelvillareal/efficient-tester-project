@@ -239,7 +239,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
     <img src="{% static 'imageInteraction/imageHeaderTop384.PNG' %}" width="1275px" id="imageHeader">
     <br>
     <div class="column">
-        <img src="{% static 'imageInteraction/sideBarHeader.PNG' %}" width="25px" height="362px">
+        <img src="{% static 'imageInteraction/sideBarHeader384.png' %}" width="25px" height="710px">
     </div>
 
        <div class="column">
@@ -1642,7 +1642,7 @@ function postToDB() {
     });
         console.log(post_data)
 
-      request.open("PUT", "http://35.153.231.217:8000/api/experiment/" + myParam +"/");
+      request.open("PUT", "http://54.90.175.110:8000/api/experiment/" + myParam +"/");
       request.setRequestHeader('Content-type','application/json');
       request.send(post_data);
 
