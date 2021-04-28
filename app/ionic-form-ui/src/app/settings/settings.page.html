@@ -7,6 +7,7 @@
     </ion-toolbar>
   </ion-header>
 
+
   <ion-content>
     <div class="part">
         <ion-item lines="full" class='item-small'>
@@ -24,16 +25,15 @@
     
         <div style="padding-top: 3%;">
         <ion-card>
-          <ion-item>
-            <ion-label position="floating">Enter your new Email:</ion-label>
-            <ion-input></ion-input>
-          </ion-item>
-          <ion-item>
-              <ion-button type="Cancel" color="danger" expand="block" position="floating">Cancel</ion-button>
-              <ion-button type="Save" color="danger" expand="block" position="floating">Save</ion-button>
-          </ion-item>
+          <form (ngSubmit)= "updateEmail()" #registerForm="ngForm">
+            <ion-item>
+              <ion-label position="floating">Enter your new Email:</ion-label>
+              <ion-input type="email" name="email"  [(ngModel)]="userCredentials.email" ></ion-input>
+            </ion-item>
+            <ion-button type="Cancel" color="danger" expand="block" position="floating">Cancel</ion-button>
+            <ion-button type="Save" color="danger" expand="block" position="floating" type="submit">Save</ion-button>
+          </form>
         </ion-card>
-          <ion-button>Save</ion-button>
       </div>
     </div>
   </ion-content>
