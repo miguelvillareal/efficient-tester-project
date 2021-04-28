@@ -10,12 +10,48 @@
 <ion-content>
   <ion-card color="success">
     <ion-card-header>
-      <ion-card-subtitle>Application!</ion-card-subtitle>
+      <ion-card-subtitle>Our Team</ion-card-subtitle>
       <ion-card-title>Efficient Tester</ion-card-title>
     </ion-card-header>
     
     <ion-card-content>
+      <button (click)="redirectThree()">
+        <ion-icon name="arrow-forward"></ion-icon>
+        <div>Team Website</div>
+      </button>
+      We made the application and if you want to find out more about our team and what we do please click on the link.
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card color="success">
+    <ion-card-header>
+      <ion-card-subtitle>Lab Groups</ion-card-subtitle>
+      <ion-card-title>Create or Select a Lab Group!</ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <button (click)="redirect()">
+        <ion-icon name="arrow-forward"></ion-icon>
+        <div>Lab Group Page</div>
+      </button>
       This is made for Lab Purposes only.
     </ion-card-content>
   </ion-card>
+
+  <ion-card color="success">
+    <ion-card-header>
+      <ion-card-subtitle>Protocols</ion-card-subtitle>
+      <ion-card-title>Create or Select a Protocol!</ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <button (click)="redirectTwo()">
+        <ion-icon name="arrow-forward"></ion-icon>
+        <div>Protocols Page</div>
+      </button>
+      This is made for Lab Purposes only.
+    </ion-card-content>
+  </ion-card>
+
+  <iframe width="500" height="320" [src]="sanitize(vid)" frameborder="0" allowfullscreen></iframe>
 </ion-content>
