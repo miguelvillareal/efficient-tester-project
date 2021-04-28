@@ -5,6 +5,8 @@ import { Platform, ToastController, IonList} from '@ionic/angular';
 import { StorageService, Item } from 'src/app/services/storage.service';
 import { ApiDjangoService } from '../services/api-django.service';
 import {myID} from 'src/app/services/authentication.service';
+import {currentGroup} from 'src/app/lab-group/lab-group.page';
+import {groupName} from 'src/app/lab-group/lab-group.page';
 
 export var protocolID:number;
 
@@ -14,6 +16,8 @@ export var protocolID:number;
   styleUrls: ['./protocols.page.scss'],
 })
 export class ProtocolsPage implements OnInit{
+
+  public userName : string = null;
 
   protocolCredentials = { name: '', plateType: '', numSamples: '', posRate: ''};
   
@@ -25,7 +29,11 @@ export class ProtocolsPage implements OnInit{
 
   items: Item[] = [];
 
+  displayList: Item[] = [];
+
   newItem: Item = <Item>{};
+
+  public currentGroupName : string = null;
 
   @ViewChild('mylist') mylist: IonList;
 
@@ -35,9 +43,11 @@ export class ProtocolsPage implements OnInit{
     private toastController: ToastController, 
     private authService: AuthenticationService, 
     private router: Router) {
+    
+      this.currentGroupName = groupName;
      
     this.plt.ready().then(() => {
-      this.loadItems();
+      this.loadItems("name");
     });
     
   }
@@ -46,37 +56,39 @@ export class ProtocolsPage implements OnInit{
     if (this.ApiService.networkConnected) {
       this.ApiService.showLoading();
               console.log(myID);
+
               let protocolToCreate = {
                 "name": this.protocolCredentials.name,
                 "creator_ID": myID,
                 "plate_type": this.protocolCredentials.plateType,
                 "num_samples": this.protocolCredentials.numSamples,
                 "suspected_pos_rate": this.protocolCredentials.posRate,
-                "active_status": true
+                "active_status": true,
+                "lab_group": currentGroup
               }
   
               this.ApiService.createProtocol(protocolToCreate).subscribe((res) => {
                 if (res) {
                   console.log(res)
-                  this.loadItems();
+                  this.loadItems("name");
                 }
                 else {
                   this.ApiService.stopLoading();
                   this.ApiService.showError("An error occured while creating a Protocol")
                 }
               });
-            //}
-            //else{
-            //  this.ApiService.showError("A Protocol already exists for this name and positive rate!");
-            //}
-          //}
-          //else {
-            
-          //  this.ApiService.showError("An error occured while registering")
-         
-          //}
-      //});
     }
+  }
+
+  sortByValue(property){
+    return function(a,b){  
+      if(a[property] > b[property])  
+         return 1;  
+      else if(a[property] < b[property])  
+         return -1;  
+  
+      return 0;  
+   } 
   }
 
   
@@ -84,6 +96,7 @@ export class ProtocolsPage implements OnInit{
     this.router.navigateByUrl("/experiments");
    }
   
+
   onSelect(item: Item): void {
     this.selectedItem = item;
     protocolID = item.id;
@@ -91,49 +104,31 @@ export class ProtocolsPage implements OnInit{
 	  this.redirect();
   }
   
-    /** 
-    this.newItem.modified = Date.now();
-    this.newItem.id = Date.now();
-    this.storageService.addItem(this.newItem).then(item => {
-      this.newItem = <Item>{};
-      //this.showToast('Item added!')
-      this.loadItems();
-    });
-  }
-  **/
-
-  loadItems(){
+  loadItems(value){
+    //console.log(currentGroup)
+    this.displayList = [];
     this.ApiService.getProtocols().subscribe(items => {
-      this.items = items["results"];
-	  console.log(items["results"]);
-    });
-  }
+      for (let index in items["results"]){
+        let currentItem = items["results"][index]["lab_group"];
 
-  /**
-  updateItem(item: Item){
-    item.title = 'UPDATED: ${item.title}';
-    item.modified = Date.now();
-    this.storageService.updateItem(item).then(item => {
-      this.showToast('Item updated!');
-      this.mylist.closeSlidingItems();
-      this.loadItems();
+		 	  if(currentItem == currentGroup){
+          let userId = items["results"][index]["creator_ID"];
+        //console.log(userId)
+        this.ApiService.getinfoUser(userId).subscribe((listUser) => { 
+          if(listUser){
+            //console.log(listUser.username)
+            //this.userName = listUser.username;
+            items["results"][index]["creator_ID"] = listUser.username;
+            console.log(items["results"][index]["creator_ID"])
+          }
+        });
+          this.displayList.push(items["results"][index]);
+          this.displayList.sort(this.sortByValue(value));
+        }
+    }
+    //console.log(this.displayList)
     });
   }
-  deleteItem(item: Item){
-    this.storageService.deleteItem(item.id).then(item => {
-      this.showToast('Item removed!');
-      this.mylist.closeSlidingItems();
-      this.loadItems();
-    });
-  }
-  async showToast(msg) {
-    const toast = await this.toastController.create({
-      message: msg,
-      duration: 2000
-    });
-    toast.present();
-  }
-  **/
 
   ngOnInit(){
 
