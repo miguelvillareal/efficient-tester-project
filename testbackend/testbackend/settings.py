@@ -29,7 +29,7 @@ SENDGRID_API_KEY=""
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['35.153.231.217']
 
 
 #Email configuration
@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_mongoengine',
     'django_filters',
     'djoser',
     'resetpassword',
