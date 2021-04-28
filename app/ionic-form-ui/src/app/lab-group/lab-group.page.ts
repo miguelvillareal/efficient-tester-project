@@ -5,6 +5,12 @@ import { Platform, ToastController, IonList} from '@ionic/angular';
 import { StorageService, Item } from 'src/app/services/storage.service';
 import { ApiDjangoService } from '../services/api-django.service';
 import {myID} from 'src/app/services/authentication.service';
+import { ModalController } from '@ionic/angular';
+import {GroupPopupComponent} from 'src/app/group-popup/group-popup.component';
+import {AddgroupmemberComponent} from 'src/app/addgroupmember/addgroupmember.component';
+
+export var currentGroup:number;
+export var groupName:string;
 
 @Component({
   selector: 'app-lab-group',
@@ -22,6 +28,8 @@ export class LabGroupPage implements OnInit {
 
   items: Item[] = [];
 
+  displayList: Item[] = [];
+
   newItem: Item = <Item>{};
 
   @ViewChild('mylist') mylist: IonList;
@@ -31,7 +39,9 @@ export class LabGroupPage implements OnInit {
     private ApiService: ApiDjangoService, 
     private toastController: ToastController, 
     private authService: AuthenticationService, 
-    private router: Router) {
+    private router: Router,
+    private modalCtrl: ModalController
+    ) {
      
     this.plt.ready().then(() => {
       this.loadItems();
@@ -51,6 +61,24 @@ export class LabGroupPage implements OnInit {
               this.ApiService.createLabGroups(labgroupToCreate).subscribe((res) => {
                 if (res) {
                   console.log(res)
+                  currentGroup = res.id;
+                  let groupMembershipToCreate = {
+                    "user": myID,
+                    "group": currentGroup, 
+                    "role": 1,
+                  }
+                  this.ApiService.createLabGroupMembership(groupMembershipToCreate).subscribe((res) => {
+                          if (res) {
+                            console.log(res)
+                          }
+                          else {
+                            this.ApiService.stopLoading();
+                            this.ApiService.showError("An error occured while creating a Protocol")
+                          }
+                  
+                  
+                        });
+                  this.loadItems();
                 }
                 else {
                   this.ApiService.stopLoading();
@@ -70,14 +98,39 @@ export class LabGroupPage implements OnInit {
       //});
     }
   }
+
+  
+  async addMember(){
+	  const modal = await this.modalCtrl.create({
+      component: AddgroupmemberComponent,
+		  componentProps: {
+			  groupID: currentGroup
+		  }
+	  })
+	  await modal.present();
+  }
+  
+  async groupPopup(groupName){
+	  const modal = await this.modalCtrl.create({
+		  component: GroupPopupComponent,
+		  componentProps: {
+			  groupName: groupName
+		  }
+	  })
+	  await modal.present();
+  }
+  
   
   redirect() {
     this.router.navigateByUrl("/experiments");
    }
   
   onSelect(item: Item): void {
-	  this.selectedItem = item;
-	  this.redirect();
+    this.selectedItem = item;
+    currentGroup = item.id;
+    groupName = item['name'];
+    this.groupPopup(groupName);
+	  //this.redirect();
   }
   
     /** 
@@ -93,8 +146,15 @@ export class LabGroupPage implements OnInit {
 
   loadItems(){
     this.ApiService.getLabGroups().subscribe(items => {
-      this.items = items["results"];
-	  console.log(items["results"]);
+      for (let index in items["results"]) {
+        for (let i in items["results"][index]["member_list"]) {
+            let someUser = items["results"][index]["member_list"][i];
+            console.log(someUser)
+            if (someUser == myID) {
+                this.displayList.push(items["results"][index]);
+            }
+        }
+    }
     });
   }
 
@@ -123,11 +183,6 @@ export class LabGroupPage implements OnInit {
     toast.present();
   }
   **/
-  logout() {
-    this.authService.logout();
-    this.router.navigateByUrl('/home', { replaceUrl: true });
-  }
-
   ngOnInit(){
 
   }
