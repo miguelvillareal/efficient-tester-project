@@ -29,7 +29,7 @@ SENDGRID_API_KEY=""
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['35.153.231.217']
+ALLOWED_HOSTS = ['54.90.175.110']
 
 
 #Email configuration
