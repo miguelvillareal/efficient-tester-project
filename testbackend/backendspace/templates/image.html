@@ -3,6 +3,43 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
+    /* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
 
 /* Three image containers (use 25% for four, and 50% for two, etc) */
 .column {
@@ -21,7 +58,6 @@
 #imageHeader {
      margin-left: 30px
 }
-
 
 .next {
     background-color:#4caff0;
@@ -87,6 +123,11 @@
     text-align: justify;
     display: inline-block;
 }
+#notesEnter {
+        word-wrap: break-word;
+        word-break: break-all;
+        height: 80px;
+}
 
 .img-with-text input {
     display: inline-block;
@@ -114,11 +155,79 @@
   background-color: RoyalBlue;
 }
 
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+/* Button used to open the contact form - fixed at the bottom of the page */
+.open-button {
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  position: fixed;
+  bottom: 23px;
+  right: 28px;
+  width: 280px;
+}
+
+/* The popup form - hidden by default */
+.form-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+  max-width: 300px;
+  padding: 10px;
+  background-color: white;
+}
+
+/* Full-width input fields */
+.form-container input[type=text], .form-container input[type=password] {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+}
+
+/* When the inputs get focus, do something */
+.form-container input[type=text]:focus, .form-container input[type=password]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for the submit/login button */
+.form-container .btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+  background-color: red;
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
 
 
 </style>
 </head>
 <body onload="createTestTubes(); setActiveGroup(); updateFromSave();">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
 <!-- Add icon library -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -350,16 +459,102 @@
         <a href="#" data-highlight="incomplete" id="H12-anchor"><input type="image" src="{% static 'imageInteraction/WellImage_empty.PNG' %}" name="saveForm" class="btTxt" id="H12" onclick="changeImage(this);"/></a>
         <br>
     </div>
-    <button id="nextButton" type="button" onClick="isNext();">Next</button>
-    <button type="button" onClick="nextPlate();">Next Plate</button>
-    <button type="button" onClick="postToDB();">Save Experiment</button>
-    <button type="button" onclick="finishExperiment();">Done</button>
+    <div>
+
+    <button class="btn" id="nextButton" type="button" onClick="isNext();">Next</button><br><br>
+
+    <button class="btn" type="button" onClick="postToDB();"><i class="fa fa-save"></i> Save</button><br><br>
+    <button class="btn" type="button" onclick="finishExperiment();">Done</button><br><br>
     <!-- open the modal window -->
-    <button class="btn"><i class="fa fa-info"></i></button>
+    <button id="myBtn" class="btn"><i class="fa fa-info"></i> Info</button><br><br>
+    <button id="openNotes" class="btn"><i class="fa fa-sticky-note"></i> View Notes</button><br><br>
+    <!--- <button id="generatePDF" class="btn" onclick="generatePDF();"><i class="fa fa-download"></i> Generate PDF</button> <br><br> --->
+
+     <div id="downloadPDF"></div>
+    </div>
 
 
+<!-- The Modal -->
+<div id="notesModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="closeNote"></span>
+    <center><h1>Notes Left:</h1></center>
+    <center>
+    <div id="notesDiv">
+
+    </div>
+    </center>
+
+
+  </div>
 
 </div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">x</span>
+    <center><h1>Key</h1></center>
+    <center>
+      <table>
+          <tr>
+              <th>Image</th>
+              <th>Description</th>
+          </tr>
+          <tr>
+              <td><center><img class="btTxt" src="{% static 'imageInteraction/WellImage_empty.PNG' %}"></img></center></td>
+              <td><center>Empty Well image</center></td>
+          </tr>
+          <tr>
+              <td><center><img class="btTxt" src="{% static 'imageInteraction/WellImage_active.png' %}"></img></center></td>
+              <td><center>Active Well image</center></td>
+          </tr>
+          <tr>
+              <td><center><img class="btTxt" src="{% static 'imageInteraction/WellImage_filled.png' %}"></img></center></td>
+              <td><center>Selected Well image</center></td>
+          </tr>
+          <tr>
+              <td><center><img class="btTxt" src="{% static 'imageInteraction/WellImage_filledgrey.png' %}"></img></center></td>
+              <td><center>Non-Active Finished Well image</center></td>
+          </tr>
+          <tr>
+              <td><img src="{% static 'imageInteraction/testTube_active.png' %}"></img></td>
+              <td><center>Active Test Tube</center></td>
+          </tr>
+          <tr>
+              <td><img src="{% static 'imageInteraction/testTube_empty.png' %}"></img></td>
+              <td><center>Empty Test Tube</center></td>
+          </tr>
+          <tr>
+              <td><img src="{% static 'imageInteraction/testTube_nonpositive.png' %}"></img></td>
+              <td><center>Finished Test Tube</center></td>
+          </tr>
+          <tr>
+              <td> <img src="{% static 'imageInteraction/testTube_positive.png' %}"></img></td>
+              <td><center>Positive Test Tube</center></td>
+          </tr>
+       </table>
+
+    <center><p>Test tube information given as following:</p></center>
+        <center><p>[StepNumber]-[PlateNumber].[GroupNumber]</p></center>
+    </center>
+
+
+  </div>
+
+</div>
+
+</div>
+    <div style="white-space: nowrap; ">
+        <p>Current Plate:</p>
+        <p id="currentPlate" style="white-space: nowrap;display: inline;">1</p>
+        <button class="btn" type="button" onClick="nextPlate();" style="white-space: nowrap;"><i class="fa fa-arrow-right"></i></button>
+
+    </div>
 
 <div class="row" id="testTubeBottom">
 
@@ -370,12 +565,36 @@
 <br>
 <br>
 
-<label for="notesEnter">Notes for this stage:</label>
+<!--- <label for="notesEnter">Notes for this stage:</label>
 <textarea id="notesEnter" name="noteEnter" rows="4" cols="50">Enter Your Notes here</textarea>
   <br><br>
+
 <button type="submit" value="Submit" onclick="notesFunction();">Submit Notes</button>
+-->
+<button class="open-button btn" onclick="openForm()">Open Notes</button>
+
+<div class="form-popup" id="myForm">
+
+    <h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enter Note:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h1>
+    <h4 id="currentWellNum"></h4>
+    <br>
+    <center>
+    <label for="psw"><b>Notes:</b></label>
+    <br>
+    <input id="notesEnter" type="text" placeholder="Enter Note here" name="psw">
+    <br><br>
+
+    <button class="btn" onclick="notesFunction();">Submit Note</button>
+    <br><br>
+    <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+    <br><br><br><br><br><br>
+    <br>
+    </center>
+</div>
+
 
 </body>
+
 
 <script>
 
@@ -386,33 +605,117 @@
     var currentGroup = JSON.parse({{data|safe}}['current_interaction'])['currentGroup'];
     var currentlySelectedAll = JSON.parse({{data|safe}}['current_interaction'])['currentlySelectedAll'];
 
+    var processStep = {{ data|safe }}['step_num'];
+
     var pythonDictAllStages = JSON.parse({{data|safe}}['current_interaction'])['pythonDictAllStages'];
-    var groupedPools = pythonDictAllStages['0'][0];
+    var groupedPools = pythonDictAllStages['' + (processStep - 1)][0];
 
-
+    console.log(pythonDictAllStages['' + (processStep - 1)])
+    console.log(currentGroup)
 
     var listOfAllCompleted = JSON.parse({{data|safe}}['current_interaction'])['listOfAllCompleted'];
     var currentlySelectedGroup = JSON.parse({{data|safe}}['current_interaction'])['currentlySelectedGroup'];
 
-    console.log(JSON.parse({{data|safe}}['current_interaction']))
 
     var selectedPositive = JSON.parse({{data|safe}}['current_interaction'])['selectedPositive'];
 
     var wellPlate = JSON.parse({{data|safe}}['current_interaction'])['wellPlate'];
-    var processStep = {{ data|safe }}['step_num'];
+
 
     var userNotes = {{ data|safe }}['user_notes'];
 
+    var userName = {{ data|safe }}["name"];
+
+
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// Get the modal
+var noteModal = document.getElementById("notesModal");
+
+// Get the button that opens the modal
+var viewNotes = document.getElementById("openNotes");
+
+// Get the <span> element that closes the modal
+var spanNote = document.getElementsByClassName("closeNote")[0];
+
+// When the user clicks the button, open the modal
+viewNotes.onclick = function() {
+  noteModal.style.display = "block";
+
+
+  var item = document.getElementById("notesDiv");
+  var keys = JSON.stringify(userNotes);
+  console.log(userNotes)
+  console.log(keys);
+  var printStr = ""
+  for (var i = 0; i < keys.length; i++)
+  {
+      printStr += keys[i];
+      printStr += "";
+  }
+  item.innerText = printStr;
+}
+
+// When the user clicks on <span> (x), close the modal
+spanNote.onclick = function() {
+  noteModal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == noteModal) {
+    noteModal.style.display = "none";
+  }
+}
+
+
+    function openForm() {
+  document.getElementById("myForm").style.display = "block";
+}
+
+function closeForm() {
+  document.getElementById("myForm").style.display = "none";
+}
 
     function nextPlate() {
-        var count = 0;
-        for (var index = 0; index < groupedPools.length; index++)
+        if (groupedPools[currentGroup - 1][0] == "A1")
         {
-            for (var item = 0; item < groupedPools[index].length; item++)
-            {
-                count++;
-            }
+            console.log("We are in the if statement")
+            clearForNextPlate();
+            createTestTubes();
+            for(var i = 1; i < currentGroup; i ++)
+                {
+                document.getElementById("testTubeGroup_" + i).src = document.getElementById("testTubeGroup_" + i).src.replace("{% static 'imageInteraction/testTube_empty.png' %}", "{% static 'imageInteraction/testTube_nonpositive.png' %}");
+                }
+
+
+            setActiveGroup();
+
         }
+
+        wellPlate++;
+
+        document.getElementById("currentPlate").innerText = wellPlate
+
+
+
 
     }
 
@@ -462,7 +765,7 @@
 
     function updateTestTube(input)
     {
-        if (complete == true) return;
+        if (complete == "True" ) return;
         if (checkCompletion())
             {
                 var id = input.id;
@@ -470,24 +773,26 @@
                     {
                         document.getElementById(id).src = input.src.replace("{% static 'imageInteraction/testTube_nonpositive.png' %}", "{% static 'imageInteraction/testTube_positive.png' %}");
 
-                        var groupNum = id.substring((14));
-                        var groupSelected = groupedPools[groupNum - 1]
-                        for (var index = 0; index < groupSelected.length; index++)
-                        {
-                            anchor = document.getElementById(groupSelected[index] + "-anchor");
-                            anchor.setAttribute("data-highlight", "positive");
+                        if (wellPlate == 1) {
+                            var groupNum = id.substring((14));
+                            var groupSelected = groupedPools[groupNum - 1]
+                            for (var index = 0; index < groupSelected.length; index++) {
+                                anchor = document.getElementById(groupSelected[index] + "-anchor");
+                                anchor.setAttribute("data-highlight", "positive");
+                            }
                         }
 
                     }
                 else
                     {
                         document.getElementById(id).src = input.src.replace("{% static 'imageInteraction/testTube_positive.png' %}", "{% static 'imageInteraction/testTube_nonpositive.png' %}");
-                        var groupNum = id.substring((14));
-                        var groupSelected = groupedPools[groupNum - 1]
-                        for (var index = 0; index < groupSelected.length; index++)
-                        {
-                            anchor = document.getElementById(groupSelected[index] + "-anchor");
-                            anchor.setAttribute("data-highlight", "complete");
+                        if (wellPlate == 1) {
+                            var groupNum = id.substring((14));
+                            var groupSelected = groupedPools[groupNum - 1]
+                            for (var index = 0; index < groupSelected.length; index++) {
+                                anchor = document.getElementById(groupSelected[index] + "-anchor");
+                                anchor.setAttribute("data-highlight", "complete");
+                            }
                         }
 
                     }
@@ -495,6 +800,8 @@
     }
 
     function checkCompletion() {
+
+
 
         if (JSON.stringify(groupedPools) === JSON.stringify(listOfAllCompleted))
             {
@@ -505,11 +812,15 @@
 
     function generateTitle() {
         document.getElementById("titleHeader").innerHTML = "Step " + processStep + ", Group " + currentGroup + ": Protocol " +  {{ data|safe }}['protocol_used']
+        document.getElementById("currentWellNum").innerHTML = "Leaving a note on, step " + processStep + ", group " + currentGroup
     }
 
     function setActiveGroup() {
         // get the active items at the current group minus 1 because arrays index at 0
         listOfActiveItems = groupedPools[currentGroup - 1];
+
+
+
 
         generateTitle();
 
@@ -555,6 +866,8 @@
     }
 
     function isNext() {
+
+
 
         img = document.getElementById(currentlySelectedGroup[0]);
 
@@ -614,7 +927,7 @@
 
     function replaceWithGrey() {
 
-         if (complete == true) return;
+         if (complete == "True") return;
 
 
         for (var i = 0; i < currentlySelectedGroup.length; i ++)
@@ -630,11 +943,13 @@
 
 
     function changeImage(img) {
-        if (complete == true) return;
+        if (complete == "True") return;
 
         generateTitle();
 
         var id = img.id;
+
+        console.log(id)
 
 
         if (document.getElementById(id).src.includes("{% static 'imageInteraction/WellImage_active.png' %}"))
@@ -652,7 +967,7 @@
             }
         else
             {
-                if ( id.includes(currentGroup) )
+                if ( currentlySelectedGroup.includes(id) )
                     {
                         document.getElementById(id).src = img.src.replace("{% static 'imageInteraction/WellImage_filled.png' %}", "{% static 'imageInteraction/WellImage_active.png' %}");
 
@@ -679,14 +994,17 @@
 function postToDB() {
 
 
+
+    console.log("Selected Positive: " + selectedPositive)
+
     const urlParams = new URLSearchParams(window.location.search);
     const myParam = urlParams.get('exp');
 
-    console.log("Selected Positive:" + selectedPositive)
+
 
     let request = new XMLHttpRequest();
     var post_data = JSON.stringify({
-    "completed_status": false,
+    "completed_status": complete,
     "user_notes": JSON.stringify(userNotes),
     "step_num": processStep,
     "current_interaction":JSON.stringify({
@@ -699,11 +1017,12 @@ function postToDB() {
         "currentGroup": currentGroup,
       })
     });
+        console.log(post_data)
 
-
-      request.open("PUT", "http://127.0.0.1:8000/api/experiment/" + myParam +"/");
+      request.open("PUT", "http://35.153.231.217:8000/api/experiment/" + myParam +"/");
       request.setRequestHeader('Content-type','application/json');
       request.send(post_data);
+
       request.onload = () => {
           console.log(request);
           if (request.status === 200) {
@@ -712,11 +1031,11 @@ function postToDB() {
               console.log('error ${request.status} ${request.statusText}');
             }
           }
-          /*
+/*
           fetch('http://127.0.0.1:8000/', {method: 'POST', body: 'test123'})
           .then(results=> results.json())
           .then(console.log);
-          */
+*/
           /*
           var xhttp = new XMLHttpRequest();
           // TODO Figure out why this is like this
@@ -734,7 +1053,7 @@ function postToDB() {
     }
 
     function doStageTwo (){
-         if (complete == true) return;
+         if (complete == "True") return;
 
         groupedPools = [];
 
@@ -756,7 +1075,7 @@ function postToDB() {
     }
 
     function doStageThree () {
-         if (complete == true) return;
+         if (complete == "True") return;
 
         var stageTwoPools = groupedPools;
         var toAddArr = [];
@@ -787,9 +1106,24 @@ function postToDB() {
 
     }
 
+    function clearForNextPlate() {
+        if (complete == "True") return;
+
+        document.getElementById("testTubeBottom").innerHTML = "";
+        var allWells = ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3', 'A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4', 'A5', 'B5', 'C5', 'D5', 'E5', 'F5', 'G5', 'H5', 'A6', 'B6', 'C6', 'D6', 'E6', 'F6', 'G6', 'H6', 'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7', 'A8', 'B8', 'C8', 'D8', 'E8', 'F8', 'G8', 'H8', 'A9', 'B9', 'C9', 'D9', 'E9', 'F9', 'G9', 'H9', 'A10', 'B10', 'C10', 'D10', 'E10', 'F10', 'G10', 'H10', 'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11', 'A12', 'B12', 'C12', 'D12', 'E12', 'F12', 'G12', 'H12']
+
+        for (var index = 0; index < allWells.length; index++)
+        {
+            var id = allWells[index];
+            document.getElementById(id).src = "{% static 'imageInteraction/WellImage_empty.PNG' %}";
+            var anchor = document.getElementById("" + id + "-anchor");
+            anchor.setAttribute("data-highlight", "incomplete");
+        }
+    }
+
 
     function wipeTheBoard() {
-         if (complete == true) return;
+         if (complete == "True") return;
 
         document.getElementById("testTubeBottom").innerHTML = "";
         var allWells = ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3', 'A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4', 'A5', 'B5', 'C5', 'D5', 'E5', 'F5', 'G5', 'H5', 'A6', 'B6', 'C6', 'D6', 'E6', 'F6', 'G6', 'H6', 'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7', 'A8', 'B8', 'C8', 'D8', 'E8', 'F8', 'G8', 'H8', 'A9', 'B9', 'C9', 'D9', 'E9', 'F9', 'G9', 'H9', 'A10', 'B10', 'C10', 'D10', 'E10', 'F10', 'G10', 'H10', 'A11', 'B11', 'C11', 'D11', 'E11', 'F11', 'G11', 'H11', 'A12', 'B12', 'C12', 'D12', 'E12', 'F12', 'G12', 'H12']
@@ -809,11 +1143,11 @@ function postToDB() {
     }
 
     function finishExperiment() {
-         if (complete == true) return;
+         if (complete == "True") return;
 
         if(confirm("Are you sure you would like to finish the experiment? \n\n All changes will be lcoked if you select yes."))
         {
-            complete = true;
+            complete = "True";
             postToDB();
         }
         else
@@ -846,7 +1180,6 @@ function postToDB() {
     for (var i = 0; i < selectedPositive.length; i++)
     {
         var testTube = document.getElementById("testTubeGroup_" + selectedPositive[i]);
-        //console.log(testTube)
         testTube.src =  "{% static 'imageInteraction/testTube_positive.png' %}"
     }
 
@@ -856,9 +1189,19 @@ function postToDB() {
 
     function notesFunction() {
 
+        if (typeof userNotes == "string")
+        {
+            userNotes = JSON.parse(userNotes)
+        }
+
+
         var date = new Date().toISOString().substr(0, 19).replace('T', ' ');
 
-        userNotes[(document.getElementById("notesEnter").value)] = JSON.stringify({
+        var key = document.getElementById("notesEnter").value;
+
+
+        console.log(key)
+        userNotes[String(key)] = JSON.stringify({
         "current_interaction": {
             "wellPlate": wellPlate,
             "pythonDictAllStages": pythonDictAllStages,
@@ -870,12 +1213,68 @@ function postToDB() {
             "step_num": processStep,
                 },
         "noteDateTime" : date,
+        "leftBy" : userName
             }
         )
 
         window.alert("Note: " + document.getElementById("notesEnter").value + ", was successfully added.");
 
-        document.getElementById("notesEnter").value = "Enter Your Notes Here";
+        console.log(userNotes)
+
+        //document.getElementById("notesEnter").value = "Enter Your Notes Here";
     }
+
+    function generatePDF() {
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const myParam = urlParams.get('exp');
+
+
+
+    let request = new XMLHttpRequest();
+    var post_data = JSON.stringify({
+    "completed_status": complete,
+    "user_notes": JSON.stringify(userNotes),
+    "step_num": processStep,
+    "current_interaction":JSON.stringify({
+        "wellPlate": wellPlate,
+        "pythonDictAllStages": pythonDictAllStages,
+        "currentlySelectedAll": currentlySelectedAll,
+        "listOfAllCompleted": listOfAllCompleted,
+        "currentlySelectedGroup": currentlySelectedGroup,
+        "selectedPositive": selectedPositive,
+        "currentGroup": currentGroup,
+      })
+    });
+        console.log(post_data)
+
+      request.open("PUT", "<TODO PUT IP HERE>/api/experiment/" + myParam +"/");
+      request.setRequestHeader('Content-type','application/json');
+      request.send(post_data);
+
+      request.onload = () => {
+          console.log(request);
+          if (request.status === 200) {
+              console.log(JSON.parse(request.response));
+            } else {
+              console.log('error ${request.status} ${request.statusText}');
+            }
+          }
+
+
+    var url_mask = "tylerTest/?exp=" + myParam
+    var post_data = {'csrfmiddlewaretoken':"{{ csrf_token }}", data: userNotes}
+    // TODO add logic here for download
+        $.ajax({
+        type: "POST",
+        url: url_mask,
+        data: post_data,
+        success: console.log("Successfully Generated a PDF")
+    });
+
+
+
+    }
+
 </script>
 </html>

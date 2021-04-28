@@ -52,7 +52,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         #return is_correct
 
-
 class Protocols(models.Model):
     PLATE_TYPES = [
         (1, '96'),
@@ -66,12 +65,13 @@ class Protocols(models.Model):
     num_samples = models.PositiveSmallIntegerField()
     suspected_pos_rate = models.DecimalField(max_digits=4, decimal_places=2)
     active_status = models.BooleanField(('active'), default=True)
-    #lab_group = models.ForeignKey(LabGroup, on_delete=models.CASCADE)
+    lab_group = models.ForeignKey('LabGroup', on_delete=models.CASCADE)
 
 class Experiment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField('Experiment Name', max_length=120,blank=True)
     protocol_used = models.ForeignKey('Protocols', on_delete=models.CASCADE, blank=True)
-    completed_status = models.BooleanField(('completed'), default=False)
+    completed_status = models.CharField(('completed'), default="False", max_length=20)
     user_notes = JSONField(blank=True)
     step_num = models.PositiveSmallIntegerField()
     plaintext_data = models.FileField(blank=True)
@@ -82,7 +82,7 @@ class Experiment(models.Model):
 class LabGroup(models.Model):
     name = models.CharField('Lab Group Name', max_length=120)
     group_id = models.UUIDField()
-    member_list = models.ManyToManyField(User, through='GroupMembership', related_name='labgroups')
+    member_list = models.ManyToManyField(User, through='GroupMembership', related_name='labgroups', blank=True)
     #admin_user = models.ManyToManyField('self')
 
 class GroupMembership(models.Model):
