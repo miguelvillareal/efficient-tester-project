@@ -18,6 +18,8 @@ export class RegistrationPage implements OnInit {
 
   ngOnInit() {
   }
+  
+
 
 
   register() {
@@ -73,13 +75,43 @@ export class RegistrationPage implements OnInit {
                           console.log(myUser);
                         }
                       });
-                      //myID = listUser["results"][0]["id"];
-                      //myEmail = listUser["results"][0]["email"];
-                      //this.apiService.setLocalData("id",{"id": myID})
-                      //console.log("saved ID")
-                      //console.log(myID)
 
-                    }
+                      let labgroupToCreate = {
+                        "name": this.registerCredentials.username,
+                        "group_id": resultat.id
+                      }
+                
+                      this.apiService.createLabGroups(labgroupToCreate).subscribe((res) => {
+                      if (res) {
+                        console.log(res)
+                        let currentGroup = res.id;
+                        let userID = resultat.id;
+                        
+                        let groupMembershipToCreate = {
+                          "user": userID,
+                          "group": currentGroup, 
+                          "role": 1
+                        }
+                        this.apiService.createLabGroupMembership(groupMembershipToCreate).subscribe((res) => {
+                          if (res) {
+                            console.log(res)
+                          }
+                          else {
+                            this.apiService.stopLoading();
+                            this.apiService.showError("An error occured while creating a LabGroupMembership");
+                          }
+              
+              
+                        });   
+                      }
+                      else {
+                        this.apiService.stopLoading();
+                        this.apiService.showError("An error occured while creating a Lab Group");
+                      }
+                      
+                    });
+
+                  }
                   })
                   //console.log(resultat)
 
@@ -91,9 +123,6 @@ export class RegistrationPage implements OnInit {
               });
 
               //Put info about user in their profile
-
-              
-
             }
             else{
               this.apiService.showError("An account already exists for this email, please login");
