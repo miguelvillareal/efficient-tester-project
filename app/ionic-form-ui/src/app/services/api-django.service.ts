@@ -15,7 +15,7 @@ export class ApiDjangoService {
 
   public tokenSSO: String = "";
     networkConnected: boolean = true;
-    virtualHostName: string = 'http://35.153.231.217:8000'
+    virtualHostName: string = 'http://54.90.175.110:8000'
     appName: string = '';
     apiPrefix = "/api"
     loader: any;
