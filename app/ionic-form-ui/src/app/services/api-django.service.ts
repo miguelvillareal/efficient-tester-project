@@ -15,7 +15,7 @@ export class ApiDjangoService {
 
   public tokenSSO: String = "";
     networkConnected: boolean = true;
-    virtualHostName: string = 'http://127.0.0.1:8000'
+    virtualHostName: string = 'http://35.153.231.217:8000'
     appName: string = '';
     apiPrefix = "/api"
     loader: any;
@@ -29,6 +29,7 @@ export class ApiDjangoService {
     placeUserInfoUrl = this.virtualHostName + this.apiPrefix + "/user/"
     getProtocolUrl = this.virtualHostName + this.apiPrefix + "/protocols/"
     getLabGroupUrl = this.virtualHostName + this.apiPrefix + "/labgroups/"
+    getLabGroupMembershipUrl = this.virtualHostName + this.apiPrefix + "/groupmembership/"
 	  getExperimentUrl = this.virtualHostName + this.apiPrefix + "/experiments/"
     getAuthUserUrl = this.virtualHostName + "/auth/users/";
     //getMyUrl = this.virtualHostName + "/auth/users/me/";
@@ -106,6 +107,31 @@ export class ApiDjangoService {
       // At this point make a request to your backend  
       console.log("on appelle BACKEND encoded url " + url);
       this.http.put(url, user, options)
+        .pipe(retry(1))
+        .subscribe(res => {
+          observer.next(res);
+          observer.complete();
+        }, error => {
+          observer.next();
+          observer.complete();
+          console.log(error);// Error getting the data
+        });
+    });
+  }
+
+  getinfoUser(path){
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    
+    let url = this.placeUserInfoUrl+path+"/";
+
+    return Observable.create(observer => {
+      // At this point make a request to your backend  
+      console.log("on appelle BACKEND encoded url " + url);
+      this.http.get(url, options)
         .pipe(retry(1))
         .subscribe(res => {
           observer.next(res);
@@ -216,6 +242,31 @@ export class ApiDjangoService {
     });
   }
 
+  getUsers() {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    let url = this.getUserUrl;
+
+    return Observable.create(observer => {
+      // At this point make a request to your backend  
+      console.log("on appelle BACKEND encoded url " + url);
+      this.http.get(url, options)
+        .pipe(retry(1))
+        .subscribe(res => {
+          observer.next(res);
+          observer.complete();
+        }, error => {
+          observer.next();
+          observer.complete();
+          console.log(error);// Error getting the data
+        });
+    });
+  }
+
   sendResetPasswordLink(email) {
     const options = {
      headers: new HttpHeaders({
@@ -303,6 +354,57 @@ createLabGroups(labgroup){
     // At this point make a request to your backend  
     console.log("on appelle BACKEND encoded url " + url);
     this.http.post(url, labgroup, options)
+      .pipe(retry(1))
+      .subscribe(res => {
+        observer.next(res);
+        observer.complete();
+      }, error => {
+        observer.next();
+        observer.complete();
+        console.log(error);// Error getting the data
+      });
+  });
+}
+
+createLabGroupMembership(labgroupmembership){
+  
+  const options = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+  
+  let url = this.getLabGroupMembershipUrl;
+
+  return Observable.create(observer => {
+    // At this point make a request to your backend  
+    console.log("on appelle BACKEND encoded url " + url);
+    this.http.post(url, labgroupmembership, options)
+      .pipe(retry(1))
+      .subscribe(res => {
+        observer.next(res);
+        observer.complete();
+      }, error => {
+        observer.next();
+        observer.complete();
+        console.log(error);// Error getting the data
+      });
+  });
+}
+
+getLabGroupMembership() {
+  const options = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+
+  let url = this.getLabGroupMembershipUrl;
+
+  return Observable.create(observer => {
+    // At this point make a request to your backend  
+    console.log("on appelle BACKEND encoded url " + url);
+    this.http.get(url, options)
       .pipe(retry(1))
       .subscribe(res => {
         observer.next(res);
