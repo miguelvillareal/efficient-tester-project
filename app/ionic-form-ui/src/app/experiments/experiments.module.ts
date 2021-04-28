@@ -8,6 +8,8 @@ import { ExperimentsPageRoutingModule } from './experiments-routing.module';
 
 import { ExperimentsPage } from './experiments.page';
 
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+
 @NgModule({
   imports: [
     CommonModule,

@@ -10,23 +10,21 @@
   <ion-content>
     <form (ngSubmit)="addExperiment()" #registerForm="ngForm">
       <ion-item>
-        <ion-label position="fixed">User Notes</ion-label>
-        <ion-input type="text" name="myNotes" [(ngModel)]="experimentCredentials.myNotes"></ion-input>
+        <ion-label position="floating">Name</ion-label>
+        <ion-input type="text" name="name" [(ngModel)]="expCredentials.name"></ion-input>
       </ion-item>
 
-      <ion-item>
-        <ion-label position="fixed">Step Number</ion-label>
-        <ion-input type="number" name="stepNum" [(ngModel)]="experimentCredentials.stepNum"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="fixed">Protocol ID Used</ion-label>
-        <ion-input type="number" name="protUsed" [(ngModel)]="experimentCredentials.protUsed"></ion-input>
-      </ion-item>
-
-
-      <ion-button expand="full" type="submit" >Add experiment!</ion-button>
+      <ion-button expand="full" type="submit" >Create experiment!</ion-button>
     </form>
+    <button (click)="refreshPage()">Refresh Page(Click after save or done with experiment)</button>
+    <ion-item>
+      <ion-label>Sort By</ion-label>
+      <ion-select  [(ngModel)]= "sortBy" (ionChange) = "loadItems(sortBy)" okText="Okay" cancelText="Dismiss">
+        <ion-select-option   value="name">Name</ion-select-option>
+        <ion-select-option   value="step_num">Step Number</ion-select-option>
+        <ion-select-option   value="date_last_accessed">Date Last Used</ion-select-option>
+      </ion-select>
+    </ion-item>
 
     <ion-list #mylist>
 
@@ -38,10 +36,33 @@
 
         <ion-item>
           <ion-label text-wrap>
+            <h3>Name: {{ item.name }}</h3>
             <h3>Step Number: {{ item.step_num }}</h3>
             <h3>Protocol ID Used: {{ item.protocol_used }}</h3>
             <ion-text color="secondary">
-              <p>Notes: {{ item.user_notes}}</p>
+             <!-- <p>Notes: {{ item.user_notes}}</p>-->
+            </ion-text>
+            <p>{{ item.modified | date:'short'}}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <ion-item-option color="secondary" (click)="deleteItem(item)">Delete</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+
+      <h3>
+        Completed Experiments
+      </h3>
+
+      <ion-item-sliding *ngFor="let item of displayListTwo" (click)="onSelect(item)">
+
+        <ion-item>
+          <ion-label text-wrap>
+            <h3>Step Number: {{ item.step_num }}</h3>
+            <h3>Protocol ID Used: {{ item.protocol_used }}</h3>
+            <ion-text color="secondary">
+              <!-- <p>Notes: {{ item.user_notes}}</p>-->
             </ion-text>
             <p>{{ item.modified | date:'short'}}</p>
           </ion-label>

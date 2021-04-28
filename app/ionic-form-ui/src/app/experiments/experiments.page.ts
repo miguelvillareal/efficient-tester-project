@@ -14,8 +14,7 @@ import {protocolID} from 'src/app/protocols/protocols.page';
   styleUrls: ['./experiments.page.scss'],
 })
 export class ExperimentsPage implements OnInit {
-
-  experimentCredentials = { stepNum: '', myNotes: '', protUsed: ''};
+  expCredentials = { name: ''};
   
   selectedItem?: Item;
 
@@ -24,6 +23,8 @@ export class ExperimentsPage implements OnInit {
   items: Item[] = [];
 
   displayList: Item[] = [];
+
+  displayListTwo: Item[] = [];
 
   newItem: Item = <Item>{};
 
@@ -38,9 +39,20 @@ export class ExperimentsPage implements OnInit {
     private inAppBrowser: InAppBrowser) {
      
     this.plt.ready().then(() => {
-      this.loadItems();
+      this.loadItems("step_num");
     });
     
+  }
+
+  sortByValue(property){
+    return function(a,b){  
+      if(a[property] > b[property])  
+         return 1;  
+      else if(a[property] < b[property])  
+         return -1;  
+  
+      return 0;  
+   } 
   }
 
   addExperiment(){
@@ -48,22 +60,24 @@ export class ExperimentsPage implements OnInit {
       this.ApiService.showLoading();
               console.log(myID);
               let experimentToCreate = {
+                "name":this.expCredentials.name,
                 "user_notes": '{}',
-                "step_num": this.experimentCredentials.stepNum,
-                "protocol_used": this.experimentCredentials.protUsed,
+                "step_num": 1,
+                "protocol_used": protocolID,
                 "current_interaction": '{}'
               }
-  
+
               this.ApiService.createExperiment(experimentToCreate).subscribe((res) => {
                 if (res) {
                   console.log(res)
-                  this.loadItems();
+                  this.loadItems("step_num");
                 }
                 else {
                   this.ApiService.stopLoading();
                   this.ApiService.showError("An error occured while creating a Experiment")
                 }
               });
+
             //}
             //else{
             //  this.ApiService.showError("A Protocol already exists for this name and positive rate!");
@@ -77,9 +91,12 @@ export class ExperimentsPage implements OnInit {
       //});
     }
   }
+  refreshPage(){
+    this.loadItems("step_num");
+  }
   
   redirect(item) {
-    this.inAppBrowser.create("http://127.0.0.1:8000/imageInteraction/?id=" + item.protocol_used + "&exp=" +item.id);
+    this.inAppBrowser.create("http://35.153.231.217:8000/imageInteraction/?id=" + item.protocol_used + "&exp=" +item.id + "&userid=" + myID);
    }
   
   onSelect(item: Item): void {
@@ -88,24 +105,27 @@ export class ExperimentsPage implements OnInit {
 	  this.redirect(item);
   }
 
-  loadItems(){
+  loadItems(value){
+    this.displayList = [];
     this.ApiService.getExperiments().subscribe(items => {
       for (let index in items["results"]){
         let currentItem = items["results"][index]["protocol_used"];
-        //console.log(currentItem)
+        let loadedItem = items["results"][index]["completed_status"];
 		 	  if(currentItem == protocolID){
           console.log(currentItem)
-				  this.displayList.push(items["results"][index]);
+          if(loadedItem == "False"){
+            this.displayList.push(items["results"][index]);
+            this.displayList.sort(this.sortByValue(value));
+          }
+          else{
+            this.displayListTwo.push(items["results"][index]);
+            this.displayListTwo.sort(this.sortByValue(value));
+          }
         }
     }
     console.log(this.displayList)
 	  //console.log(items["results"][3]["protocol_used"]);
     });
-  }
-
-  logout() {
-    this.authService.logout();
-    this.router.navigateByUrl('/home', { replaceUrl: true });
   }
 
   ngOnInit() {
