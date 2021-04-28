@@ -96,7 +96,7 @@ export class ExperimentsPage implements OnInit {
   }
   
   redirect(item) {
-    this.inAppBrowser.create("http://35.153.231.217:8000/imageInteraction/?id=" + item.protocol_used + "&exp=" +item.id + "&userid=" + myID);
+    this.inAppBrowser.create("http://54.90.175.110:8000/imageInteraction/?id=" + item.protocol_used + "&exp=" +item.id + "&userid=" + myID);
    }
   
   onSelect(item: Item): void {
